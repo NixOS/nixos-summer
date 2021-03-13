@@ -1,0 +1,81 @@
+.hero {
+  #flair.outlined-bg-dark();
+
+  padding-top: 1*@gutter;
+  padding-bottom: 2*@gutter;
+
+  #screen-md-min({
+    padding-top: 90*@unit;
+    padding-bottom: 90*@unit;
+  });
+
+  & > div {
+    .generic-layout();
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    #screen-md-min({
+      #flex-flexible-spacing(@gutter);
+    });
+
+    #screen-sm-max({
+      flex-direction: column;
+    });
+  }
+
+  .blurb {
+    #screen-md-min({
+      width: 50%;
+    });
+  }
+
+  .blurb .columns {
+    display: flex;
+    #flex-flexible-spacing(@gutter);
+
+    #screen-sm-min({
+      & > * {
+        width: 50%;
+      }
+    });
+
+    #screen-xs-max({
+      flex-direction: column;
+    });
+  }
+
+  .blurb {
+    h1 {
+      font-size: 320%;
+    }
+    p {
+      font-size: 120%;
+      line-height: 1.5;
+    }
+    #rules_for_form.button({
+      background: #theme.color[blue-light];
+      &.-primary {
+        background: #theme.color[green];
+      }
+    });
+
+    .button-tray {
+      #screen-sm-only({
+        justify-content: center;
+        margin-bottom: 2 * @gutter;
+      });
+      #screen-sm-min({
+        #rules_for_form.button({
+          // Even at smaller sizes, as long as not full width
+          // the buttons are based on the main grid sizing.
+          width: 2 * @lg-grid-unit;
+          // Bigger buttons
+          padding-top: @gutter;
+          padding-bottom: @gutter;
+        });
+      });
+    }
+  }
+
+}
