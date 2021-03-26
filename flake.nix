@@ -55,7 +55,6 @@
                     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
                     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
-                    <link rel="preconnect" href="https://fonts.gstatic.com">
                     <link rel="stylesheet" href="/styles/index.css" type="text/css" />
                     <link rel="shortcut icon" type="image/png" href="/favicon.png" />
                     <script>
