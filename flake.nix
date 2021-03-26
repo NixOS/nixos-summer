@@ -166,7 +166,7 @@
               pushd ./output
               echo "Generating pages:"
               ${builtins.concatStringsSep "\n" (builtins.map buildPage pages)}
-              popd 
+              popd
 
               mkdir -p ./output/styles
               rm -f styles/common-styles
