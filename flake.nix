@@ -168,6 +168,8 @@
               ${builtins.concatStringsSep "\n" (builtins.map buildPage pages)}
               popd
 
+              cp -R images ./output/images
+
               mkdir -p ./output/styles
               rm -f styles/common-styles
               ln -s ${nixos-common-styles.packages."${system}".commonStyles} styles/common-styles
