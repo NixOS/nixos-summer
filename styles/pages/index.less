@@ -8,6 +8,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 
   & > div {
     .generic-layout();
@@ -59,9 +61,15 @@
       margin-bottom: 3rem;
     }
     #rules_for_form.button({
+      &.button {
+        background: #theme.color[blue];
+        color: white;
+        font-size: 1.3rem;
+      }
       &.-primary {
-        background: @color-secondary-light;
-        color: black;
+        background: #theme.color[blue-dark2];
+        color: white;
+        font-size: 1.3rem;
       }
     });
 
@@ -84,19 +92,10 @@
   }
 }
 
-// change Nix logo color to turn it into a sunshine
-body > header > div > h1 > a::before {
-  filter: hue-rotate(160deg) brightness(1.34);
-}
-
-// change button color in hero
-.hero .blurb .button {
-  background-color: #theme.color[blue];
-  color: white;
-}
 
 // info sections styling
-section {
+section.info,
+section.faq {
   // limit content width to increase readability and center it
   max-width: 60rem;
   margin: 1rem auto;
@@ -139,7 +138,7 @@ section {
 // alternate content align on each section (wide screens)
 // except faq
 #screen-md-min({
-  section:not(.faq) {
+  section.info {
     &:nth-child(2n) {
       justify-content: flex-start;
           .img {
@@ -160,5 +159,13 @@ section {
       display: block;
       width: 20%;
     }
+  }
+});
+
+#screen-sm-max({
+  section.hero {
+    min-height: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 });

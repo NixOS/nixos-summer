@@ -1,31 +1,6 @@
 @import "common-styles/index";
 @import "setup";
 
-// hide NixOS text
-body > header h1 > a::after {
-  display: none;
-}
-
-// custom header height for event web page
-body > header * {
-  line-height: unset;
-  min-height: auto !important;
-  height: auto !important;
-}
-
-body > header > div > h1 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-header h1 {
-  a,
-  a::before {
-    height: 20px !important;
-  }
-}
-
 // custom color palette for event web page
 @color-secondary: #ffc554;
 @color-secondary-dark: #e49700;
