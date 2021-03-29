@@ -3,9 +3,8 @@
   // custom flair background color
   background: @color-secondary-dark;
 
-  min-height: 100vh;
-
   display: flex;
+  min-height: 50rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -18,6 +17,7 @@
 
     #screen-md-min({
       #flex-flexible-spacing(@gutter);
+      max-width: 60rem;
     });
 
     #screen-sm-max({
@@ -93,12 +93,16 @@ body > header > div > h1 > a::before {
 // info sections styling
 section {
   // limit content width to increase readability and center it
-  max-width: 767px;
-  margin: 1em auto;
+  max-width: 60rem;
+  margin: 1rem auto;
 
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  flex-direction: row;
+  align-items: center;
+
+  emph {
+    font-weight: bold;
+  }
 
   // no border on top of the first section below hero
   &:not(:nth-child(2)) {
@@ -115,6 +119,11 @@ section {
   ul li {
     text-align: justify;
   }
+
+  .item {
+    display: block;
+  }
+
 }
 
 // alternate content align on each section (wide screens)
@@ -122,14 +131,23 @@ section {
 #screen-md-min({
   section:not(.faq) {
     &:nth-child(2n) {
-      align-items: flex-start;
+      justify-content: flex-start;
+          .img {
+             padding-left: 10%;
+          }
     }
     &:nth-child(2n+1) {
-      align-items: flex-end;
+      justify-content: flex-end;
+          .img {
+             padding-right: 10%;
+          }
     }
 
-    & > * {
-      width: 70%;
+    .text {
+      width: 65%;
+    }
+    .img {
+      width: 20%;
     }
   }
 });
