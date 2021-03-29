@@ -63,56 +63,11 @@
                     </script>
                   </head>
                   <body>
-                    <header>
-                      <div>
-                        <h1><a href="/">Summer of Nix</a></h1>
-                        <!-- ???! go read `navbar.less` and `nixos-site.js`, it's all fine I swear. -->
-                        <nav style="display: none;">
-                          <ul>
-                            ${mkHeaderLink { href = "https://nixos.org"; title = "nixos.org"; }}
-                          </ul>
-                        </nav>
-                      </div>
-                    </header>
                     <main>
                       ${bodyFinal}
                     </main>
                     <footer>
                       <div>
-                        <div class="upper">
-                          <section>
-                            <h4>The project</h4>
-                            <ul>
-                              <li><a href="https://status.nixos.org/">Channel Status</a></li>
-                              <li><a href="https://search.nixos.org/packages">Packages search</a></li>
-                              <li><a href="https://search.nixos.org/options">Options search</a></li>
-                              <li><a href="/community/teams/security.html">Security</a></li>
-                            </ul>
-                          </section>
-                          <section>
-                            <h4>Get in Touch</h4>
-                            <ul>
-                              <li><a href="https://discourse.nixos.org/">Forum</a></li>
-                              <li><a href="https://webchat.freenode.net/#nixos">Chat</a></li>
-                              <li><a href="/community/commercial-support.html">Commercial support</a></li>
-                            </ul>
-                          </section>
-                          <section>
-                            <h4>Contribute</h4>
-                            <ul>
-                              <li><a href="/guides/contributing.html">Contributing Guide</a></li>
-                              <li><a href="/donate.html">Donate</a></li>
-                            </ul>
-                          </section>
-                          <section>
-                            <h4>Stay up to date</h4>
-                            <ul>
-                              <li><a href="/blog/index.html">Blog</a></li>
-                              <li><a href="https://weekly.nixos.org/">Newsletter</a></li>
-                            </ul>
-                          </section>
-                        </div>
-                        <hr />
                         <div class="lower">
                           <section class="footer-copyright">
                             <h4>NixOS</h4>
@@ -167,6 +122,8 @@
               echo "Generating pages:"
               ${builtins.concatStringsSep "\n" (builtins.map buildPage pages)}
               popd
+
+              cp -R images ./output/images
 
               mkdir -p ./output/styles
               rm -f styles/common-styles

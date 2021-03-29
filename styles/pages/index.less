@@ -1,13 +1,15 @@
 .hero {
   #flair.outlined-bg-dark();
+  // custom flair background color
+  background: @color-secondary-dark;
 
-  padding-top: 1*@gutter;
-  padding-bottom: 2*@gutter;
-
-  #screen-md-min({
-    padding-top: 90*@unit;
-    padding-bottom: 90*@unit;
-  });
+  display: flex;
+  min-height: 50rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 
   & > div {
     .generic-layout();
@@ -17,6 +19,7 @@
 
     #screen-md-min({
       #flex-flexible-spacing(@gutter);
+      max-width: 60rem;
     });
 
     #screen-sm-max({
@@ -47,16 +50,26 @@
 
   .blurb {
     h1 {
-      font-size: 320%;
+      font-size: 400%;
+      font-weight: bold;
     }
     p {
       font-size: 120%;
       line-height: 1.5;
+      font-weight: bold;
+      margin-top: 1rem;
+      margin-bottom: 3rem;
     }
     #rules_for_form.button({
-      background: #theme.color[blue-light];
+      &.button {
+        background: #theme.color[blue];
+        color: white;
+        font-size: 1.3rem;
+      }
       &.-primary {
-        background: #theme.color[green];
+        background: #theme.color[blue-dark2];
+        color: white;
+        font-size: 1.3rem;
       }
     });
 
@@ -77,5 +90,82 @@
       });
     }
   }
+}
+
+
+// info sections styling
+section.info,
+section.faq {
+  // limit content width to increase readability and center it
+  max-width: 60rem;
+  margin: 1rem auto;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  emph {
+    font-weight: bold;
+  }
+
+  // no border on top of the first section below hero
+  &:not(:nth-child(2)) {
+    border-top: #e9e9e9 1px solid;
+  }
+
+  // reduce title size
+  h2 {
+    font-size: 1.5em;
+  }
+
+  // justify content text
+  p,
+  ul li {
+    text-align: justify;
+  }
+
+  .item {
+    display: block;
+  }
+
+  .img {
+    display: none;
+  }
 
 }
+
+// alternate content align on each section (wide screens)
+// except faq
+#screen-md-min({
+  section.info {
+    &:nth-child(2n) {
+      justify-content: flex-start;
+          .img {
+             padding-left: 10%;
+          }
+    }
+    &:nth-child(2n+1) {
+      justify-content: flex-end;
+          .img {
+             padding-right: 10%;
+          }
+    }
+
+    .text {
+      width: 65%;
+    }
+    .img {
+      display: block;
+      width: 20%;
+    }
+  }
+});
+
+#screen-sm-max({
+  section.hero {
+    min-height: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+});
