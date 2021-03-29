@@ -133,32 +133,3 @@ section {
     }
   }
 });
-
-// add arrow on large screens
-#screen-md-min({h2::before {
-  background-image: url('../images/arrow.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position-y: -0.1rem;
-  width: 3rem;
-  position: absolute;
-  transform: translate(-4rem, 0.5rem);
-  animation-name: wiggle;
-  animation-duration: 5s;
-  animation-iteration-count: infinite;
-  display: inline-block;
-  height: 1rem;
-  content: "";
-}
-});
-@keyframes wiggle {
-  0% {
-    transform: translate(-4rem, 0.5rem);
-  }
-  50% {
-    transform: translate(-3.8rem, 0.5rem);
-  }
-  100% {
-    transform: translate(-4rem, 0.5rem);
-  }
-}
