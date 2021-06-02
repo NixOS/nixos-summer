@@ -17,9 +17,6 @@
             {
               path = "index.html";
             }
-            {
-              path = "folder/index.html";
-            }
           ];
         mkPage =
           { path

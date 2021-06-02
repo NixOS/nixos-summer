@@ -10,6 +10,9 @@ To develop on the website **locally** use the following commands.
 
 ```console
 $ nix build ./#packages.x86_64-linux.nixos-summer-serve -o ./result-serve
+# or
+$ nix-build . -A packages.x86_64-linux.nixos-summer-serve -o ./result-serve
+
 $ ./result-serve/bin/serve
 ```
 
