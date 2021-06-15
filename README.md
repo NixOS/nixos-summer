@@ -19,6 +19,9 @@ $ ./result-serve/bin/serve
 Last command will build the repository and **watch for changes of the files**
 in this repository. Once some file **changes it will trigger a rebuild**.
 
+> This only works on files tracked by git! For instance, if you want to add
+> images, you need to add them to git before they are included in build.
+
 Local preview is served at **`http://127.0.0.1:8000`**.
 
 If you are using [LiveReload](http://livereload.com/extensions/) browser
