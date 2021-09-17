@@ -21,18 +21,16 @@ jobs:
         nix-channel --add https://nixos.org/channels/nixpkgs-unstable
         nix-channel --update
 
-    - name: Installing NixFlakes
-      run: |
-        nix-env -iA nixpkgs.nixUnstable
-        echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf
-        nix --version
-        cat /etc/nix/nix.conf
-        nix build "github:NixOS/nix?rev=1ec4efa6c82fb6d90887c21aa7c7c6f3c644dd65" -o nix
-        PATH="$PWD/nix/bin/:$HOME/.nix-profile/bin:$PATH"
-        echo "PATH=${PATH}" >> $GITHUB_ENV
+    - uses: cachix/install-nix-action@v12
+      with:
+        install_url: https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210823_af94b54/install
+        extra_nix_config:
+          experimental-features = nix-command flakes
 
     - name: Building summer.nixos.org
       run: |
+        nix build "github:NixOS/nix?rev=1ec4efa6c82fb6d90887c21aa7c7c6f3c644dd65" -o nix
+        PATH="$PWD/nix/bin/:$HOME/.nix-profile/bin:$PATH"
         nix build
         mkdir build
         cp -RL ./result/* ./build/
