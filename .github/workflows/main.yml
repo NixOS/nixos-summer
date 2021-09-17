@@ -27,6 +27,7 @@ jobs:
         echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf
         nix --version
         cat /etc/nix/nix.conf
+        nix build "github:NixOS/nix?rev=1ec4efa6c82fb6d90887c21aa7c7c6f3c644dd65" -o nix
         PATH="$HOME/.nix-profile/bin:$PATH"
         echo "PATH=${PATH}" >> $GITHUB_ENV
 
