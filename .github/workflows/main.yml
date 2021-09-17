@@ -11,15 +11,7 @@ jobs:
     - name: Checking out the repository
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0
-
-    - name: Installing Nix
-      uses: cachix/install-nix-action@v12
-
-    - name: Install unstable channel
-      run: |
-        nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-        nix-channel --update
+        fetch-depth: 1
 
     - uses: cachix/install-nix-action@v12
       with:
