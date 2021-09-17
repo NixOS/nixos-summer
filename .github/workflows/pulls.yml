@@ -20,7 +20,10 @@ jobs:
     - name: Building summer.nixos.org
       run: |
         nix build "github:NixOS/nix?rev=1ec4efa6c82fb6d90887c21aa7c7c6f3c644dd65" -o nix
-        PATH="$PWD/nix/bin/:$HOME/.nix-profile/bin:$PATH"
+        PATH="$PWD/nix/bin/:$PATH"
+        export $PATH
+        echo "PATH=${PATH}" >> $GITHUB_ENV
+        nix --version
         nix build
         mkdir build
         cp -RL ./result/* ./build/
