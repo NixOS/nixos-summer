@@ -1,0 +1,3 @@
+[submodule "blog_posts"]
+	path = blog_posts
+	url = git@github.com:ngi-nix/ngi_website_content.git
