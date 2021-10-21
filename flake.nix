@@ -17,12 +17,8 @@
             {
               path = "index.html";
             }
-            # TODO programatically generate these
             {
-              path = "blog_posts/PerlDivingWithNix.html";
-            }
-            {
-              path = "index_blog.html";
+              path = "blog.html";
             }
           ];
         mkPage =
