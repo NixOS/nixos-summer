@@ -102,58 +102,51 @@
             nodePackages.less
           ];
           buildPhase = ''
-            function log() { echo $@; }
+            function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
 
-            mkdir -p ./output
-            pushd ./output
-            echo "Generating pages:"
-            ${concatStringsSep "\n" (map buildPage pages)}
-            popd
+            log "Make folder structure"; {
+                mkdir -p ./output/{styles/fonts,js}
+            }
 
-            cp -R src/images ./output/images
-            mkdir -p ./output/styles
-            rm -f src/styles/common-styles
-            ln -s ${nixos-common-styles.packages."${system}".commonStyles} src/styles/common-styles
+            log "Generating pages"; {
+                pushd ./output
+                ${concatStringsSep "\n" (map buildPage pages)}
+                popd
+            }
 
-            echo "Generating styles:"
-            echo " -> /styles/index.css"
+            log "Generating styles"; {
+                ln -sf ${nixos-common-styles.packages."${system}".commonStyles} src/styles/common-styles
+                lessc --verbose \
+                  --source-map=styles/index.css.map \
+                  src/styles/index.less \
+                  ./output/styles/index.css
+            }
 
-            lessc --verbose \
-              --source-map=styles/index.css.map \
-              src/styles/index.less \
-              ./output/styles/index.css
+            log "Copying fonts and js to output"; {
+                cp -R src/images ./output/images
+                cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
+                cp -R src/js/* ./output/js/
+            }
 
-            mkdir -p ./output/{styles/fonts,js}
+            log "Generating favicon's"; {
+                convert \
+                  -resize 16x16 \
+                  -background none \
+                  -gravity center \
+                  -extent 16x16 \
+                  src/images/logo.png \
+                  ./output/favicon.png
 
-            for font in src/styles/common-styles/fonts/*.ttf; do
-              echo " -> /styles/fonts/`basename $font`"
-              cp $font ./output/styles/fonts/
-            done
-
-
-            for jsscript in src/js/*.js; do
-              echo " -> /js/`basename $jsscript`"
-              cp $jsscript ./output/js/
-            done
-
-            echo " -> /favicon.png"
-            convert \
-              -resize 16x16 \
-              -background none \
-              -gravity center \
-              -extent 16x16 \
-              src/images/logo.png \
-              ./output/favicon.png
-            echo " -> /favicon.ico"
-            convert \
-              -resize x16 \
-              -gravity center \
-              -crop 16x16+0+0 \
-              -flatten \
-              -colors 256 \
-              -background transparent \
-              ./output/favicon.png \
-              ./output/favicon.ico
+                convert \
+                  -resize x16 \
+                  -gravity center \
+                  -crop 16x16+0+0 \
+                  -flatten \
+                  -colors 256 \
+                  -background transparent \
+                  ./output/favicon.png \
+                  ./output/favicon.ico
+            }
           '';
           installPhase = ''
             mkdir -p $out
