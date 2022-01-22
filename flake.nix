@@ -7,6 +7,7 @@
   outputs =
     { self, nixpkgs, nixos-common-styles }:
     let
+      inherit (builtins) readFile baseNameOf dirOf concatStringsSep;
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
       pages =
@@ -23,7 +24,7 @@
             else "Summer of Nix - ${title}";
           bodyFinal =
             if body == null
-            then builtins.readFile (self + "/" + path)
+            then readFile (self + "/" + path)
             else body;
           mkHeaderLink = { href, title, class ? "" }: ''
             <li class="${class}">
@@ -31,7 +32,7 @@
             </li>
           '';
         in
-        pkgs.writeText "${builtins.baseNameOf path}"
+        pkgs.writeText "${baseNameOf path}"
           ''
             <!doctype html>
             <html lang="en" class="without-js">
@@ -87,7 +88,7 @@
 
       buildPage = page: ''
         echo " -> /${page.path}"
-        mkdir -p ${builtins.dirOf page.path}
+        mkdir -p ${dirOf page.path}
         ln -s ${mkPage page} ${page.path}
       '';
       mkWebsite = { shell ? false }:
@@ -101,40 +102,47 @@
             nodePackages.less
           ];
           buildPhase = ''
+            function log() { echo $@; }
+
             mkdir -p ./output
             pushd ./output
             echo "Generating pages:"
-            ${builtins.concatStringsSep "\n" (builtins.map buildPage pages)}
+            ${concatStringsSep "\n" (map buildPage pages)}
             popd
 
-            cp -R images ./output/images
-
+            cp -R src/images ./output/images
             mkdir -p ./output/styles
-            rm -f styles/common-styles
-            ln -s ${nixos-common-styles.packages."${system}".commonStyles} styles/common-styles
+            rm -f src/styles/common-styles
+            ln -s ${nixos-common-styles.packages."${system}".commonStyles} src/styles/common-styles
+
             echo "Generating styles:"
             echo " -> /styles/index.css"
+
             lessc --verbose \
               --source-map=styles/index.css.map \
-              styles/index.less \
+              src/styles/index.less \
               ./output/styles/index.css
-            mkdir -p ./output/styles/fonts
-            for font in styles/common-styles/fonts/*.ttf; do
+
+            mkdir -p ./output/{styles/fonts,js}
+
+            for font in src/styles/common-styles/fonts/*.ttf; do
               echo " -> /styles/fonts/`basename $font`"
               cp $font ./output/styles/fonts/
             done
-            mkdir -p ./output/js
-            for jsscript in js/*.js; do
+
+
+            for jsscript in src/js/*.js; do
               echo " -> /js/`basename $jsscript`"
               cp $jsscript ./output/js/
             done
+
             echo " -> /favicon.png"
             convert \
               -resize 16x16 \
               -background none \
               -gravity center \
               -extent 16x16 \
-              images/logo.png \
+              src/images/logo.png \
               ./output/favicon.png
             echo " -> /favicon.ico"
             convert \
