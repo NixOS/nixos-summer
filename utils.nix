@@ -26,7 +26,7 @@
     in
     linkFarmCustom "blogs" zipped;
 
-  mkBlogTitle = title: pkgs.lib.stringAsChars (x: if x == " " then "_" else x) title;
+  mkBlogTitle = title: (pkgs.lib.stringAsChars (x: if x == " " then "_" else x) title) + ".html";
 
   mkBlogSummarySection = it: ''
     <section class="info">
