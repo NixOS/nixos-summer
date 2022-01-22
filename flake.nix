@@ -52,8 +52,9 @@
                 log "Building pages"; {
                     pushd ./output
                     ln -s ${final.indexPage} index.html
-                    ln -s ${final.blogsIndexPage} blog2.html
-                    ln -s ${final.blogPagesDerivation} blog
+                    mkdir blogs
+                    ln -s ${final.blogsIndexPage} blogs/index.html
+                    ln -s ${final.blogPagesDerivation} blogs
                     popd
                 }
 
