@@ -1,11 +1,43 @@
 { pkgs }: rec {
 
   runCommand = name: args: script:
-       pkgs.runCommand name (args // {
-          runLocal = true;
-          preferLocalBuild = true;
-          enableParallelBuilding = true;
-       }) script;
+    pkgs.runCommand name
+      (args // {
+        runLocal = true;
+        preferLocalBuild = true;
+        enableParallelBuilding = true;
+      })
+      script;
+
+  mkBlogSummarySection = it: ''
+    <section class="info">
+      <div>
+        <a href="#abc"><h2>${it.title}</h2></a>
+        <p>${it.description}</p>
+      </div>
+    </section>
+  '';
+
+  mkBlogsIndexPage = articles: mkPage {
+    title = "Summer of Nix - Blogs";
+    body = ''
+      <section class="hero">
+        <div>
+          <div class="blurb">
+            <h1>The Summer of Nix Blog</h1>
+            <p>A series of blog posts detailing the experiences of the Summer of Nix participants.</p>
+            <div class="button-tray">
+              <a class="button -primary" href="/#update-2021-06-02">Applications are closed</a>
+              <a class="button" href="/#about">Learn more</a>
+              <a class="button" href="/">Home</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      ${builtins.concatStringsSep "\n" (map mkBlogSummarySection articles)}
+    '';
+  };
 
   mkBlogPage = { title, mdPath }:
     let
@@ -33,7 +65,7 @@
         </section>
       '';
     };
-  mkPage = { path, title, body }:
+  mkPage = { title, body }:
     pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
         <!doctype html>
