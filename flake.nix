@@ -1,191 +1,130 @@
 {
-  description = "A very basic flake";
+  description = "Summer of Nix website";
 
-  inputs.nixpkgs = { url = "nixpkgs/nixos-unstable"; };
-  inputs.nixos-common-styles = { url = "github:NixOS/nixos-common-styles"; };
+  inputs.nixpkgs = { url = "nixpkgs/master"; };
+  inputs.nixos-common-styles = {
+    url = "github:DieracDelta/nixos-common-styles/multi-arch";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   outputs =
-    { self
-    , nixpkgs
-    , nixos-common-styles
-    }:
-      let
-        system = "x86_64-linux";
-        pkgs = import nixpkgs { inherit system; };
-        pages =
-          [
-            {
-              path = "index.html";
-            }
-            {
-              path = "blog.html";
-            }
-          ];
-        mkPage =
-          { path
-          , title ? null
-          , body ? null
-          }:
-            let
-              titleFinal =
-                if title == null
-                then "Summer of Nix"
-                else "Summer of Nix - ${title}";
-              bodyFinal =
-                if body == null
-                then builtins.readFile (self + "/" + path)
-                else body;
-              mkHeaderLink =
-                { href
-                , title
-                , class ? ""
-                }:
-                  ''
-                    <li class="${class}">
-                      <a href="${href}">${title}</a>
-                    </li>
-                  '';
-            in
-              pkgs.writeText "${builtins.baseNameOf path}"
-                ''
-                  <!doctype html>
-                  <html lang="en" class="without-js">
-                  <head>
-                    <title>${titleFinal}</title>
-                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-                    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
-                    <link rel="stylesheet" href="/styles/index.css" type="text/css" />
-                    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
-                    <script>
-                      var html = document.documentElement;
-                      html.className = html.className.replace("without-js", "with-js");
-                    </script>
-                  </head>
-                  <body>
-                    <main>
-                      ${bodyFinal}
-                    </main>
-                    <footer>
-                      <div>
-                        <div class="lower">
-                          <section class="footer-copyright">
-                            <h4>NixOS</h4>
-                            <div>
-                              <span>
-                                Copyright © 2021 NixOS contributors
-                              </span>
-                              <a href="https://github.com/NixOS/nixos-homepage/blob/master/LICENSES/CC-BY-SA-4.0.txt">
-                                <abbr title="Creative Commons Attribution Share Alike 4.0 International">
-                                  CC-BY-SA-4.0
-                                </abbr>
-                              </a>
-                            </div>
-                          </section>
-                          <section class="footer-social">
-                            <h4>Connect with us</h4>
-                            <ul>
-                              <li class="social-icon -twitter"><a href="https://twitter.com/nixos_org">Twitter</a></li>
-                              <li class="social-icon -youtube"><a
-                                  href="https://www.youtube.com/channel/UC3vIimi9q4AT8EgxYp_dWIw">Youtube</a></li>
-                              <li class="social-icon -github"><a href="https://github.com/NixOS">GitHub</a></li>
-                            </ul>
-                          </section>
-                        </div>
-                      </div>
-                    </footer>
-                    <script type="text/javascript" src="/js/jquery.min.js"></script>
-                    <script type="text/javascript" src="/js/index.js"></script>
-                  </body>
-                  </html>
-                '';
+    { self, nixpkgs, nixos-common-styles }:
+    let
+      supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ overlay ]; });
+      inherit (builtins) readFile baseNameOf dirOf concatStringsSep elemAt;
 
-        buildPage = page:
-          ''
-            echo " -> /${page.path}"
-            mkdir -p ${builtins.dirOf page.path}
-            ln -s ${mkPage page} ${page.path}
-          '';
-        mkWebsite = { shell ? false }:
-          pkgs.stdenv.mkDerivation {
-            name = "nixos-summer-${self.lastModifiedDate}";
-            src = self;
-            preferLocalBuild = true;
-            enableParallelBuilding = true;
-            buildInputs = with pkgs; [
-              imagemagick
-              nodePackages.less
-            ];
-            buildPhase = ''
-              mkdir -p ./output
-              pushd ./output
-              echo "Generating pages:"
-              ${builtins.concatStringsSep "\n" (builtins.map buildPage pages)}
-              popd
 
-              cp -R images ./output/images
-
-              mkdir -p ./output/styles
-              rm -f styles/common-styles
-              ln -s ${nixos-common-styles.packages."${system}".commonStyles} styles/common-styles
-              echo "Generating styles:"
-              echo " -> /styles/index.css"
-              lessc --verbose \
-                --source-map=styles/index.css.map \
-                styles/index.less \
-                ./output/styles/index.css
-              mkdir -p ./output/styles/fonts
-              for font in styles/common-styles/fonts/*.ttf; do
-                echo " -> /styles/fonts/`basename $font`"
-                cp $font ./output/styles/fonts/
-              done
-              mkdir -p ./output/js
-              for jsscript in js/*.js; do
-                echo " -> /js/`basename $jsscript`"
-                cp $jsscript ./output/js/
-              done
-              echo " -> /favicon.png"
-              convert \
-                -resize 16x16 \
-                -background none \
-                -gravity center \
-                -extent 16x16 \
-                images/logo.png \
-                ./output/favicon.png
-              echo " -> /favicon.ico"
-              convert \
-                -resize x16 \
-                -gravity center \
-                -crop 16x16+0+0 \
-                -flatten \
-                -colors 256 \
-                -background transparent \
-                ./output/favicon.png \
-                ./output/favicon.ico
-            '';
-            installPhase = ''
-              mkdir -p $out
-              cp -R ./output/* $out/
-            '';
-            shellHook = ''
-              rm -f styles/common-styles
-              ln -s ${nixos-common-styles.packages."${system}".commonStyles} styles/common-styles
-            '';
-          };
-        mkPyScript = dependencies: name:
-          let
-            pythonEnv = pkgs.python3.buildEnv.override {
-              extraLibs = dependencies;
-            };
-          in
-            pkgs.writeShellScriptBin name ''exec "${pythonEnv}/bin/python" "${toString ./.}/scripts/${name}.py" "$@"'';
-      in
+      overlay = final: prev:
+        let
+          inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage mkBlogsIndexPage mergeBlogPages mkSponsorsPage;
+          articles = (import ./blog);
+          blogPages = map mkBlogPage articles;
+          blogPageTitles = map (x: x.title) articles;
+        in
         {
-          packages."${system}" = {
-            nixos-summer = mkWebsite {};
-            nixos-summer-serve = mkPyScript (with pkgs.python3Packages; [ click livereload ]) "serve";
+          indexPage = mkPage {
+            title = "Summer of Nix";
+            body = readFile ./src/index.html;
           };
-          defaultPackage."${system}" = self.packages."${system}".nixos-summer;
-          devPackage."${system}" = mkWebsite { shell = true; };
+
+          blogsIndexPage = mkBlogsIndexPage articles;
+          sponsorsPage = mkSponsorsPage (import ./sponsors);
+          blogPagesDerivation = mergeBlogPages blogPages blogPageTitles;
+
+          mkWebsite = { shell ? false }:
+            prev.pkgs.stdenv.mkDerivation {
+              name = "nixos-summer-${self.lastModifiedDate}";
+              src = self;
+              preferLocalBuild = true;
+              enableParallelBuilding = true;
+              buildInputs = with prev.pkgs; [
+                imagemagick
+                nodePackages.less
+              ];
+              buildPhase = ''
+                function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
+
+                log "Make folder structure"; {
+                    mkdir -p ./output/{styles/fonts,js}
+                }
+
+                log "Building pages"; {
+                    pushd ./output
+                    ln -s ${final.indexPage} index.html
+                    ln -s ${final.sponsorsPage} sponsors.html
+                    mkdir blogs
+                    ln -s ${final.blogsIndexPage} blogs/index.html
+                    ln -s ${final.blogPagesDerivation}/* blogs
+                    popd
+                }
+
+                log "Generating styles"; {
+                  ln -sf ${nixos-common-styles.packages."${final.system}".commonStyles} src/styles/common-styles
+
+                  lessc --verbose \
+                    --math=always --source-map=$(pwd)/styles/index.css.map \
+                    src/styles/index.less \
+                    ./output/styles/index.css
+                  cp $(pwd)/styles/index.css.map $(pwd)/output/styles/index.css.map
+                }
+
+
+                log "Copying fonts and js to output"; {
+                    cp -R src/images ./output/images
+                    cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
+                    cp -R src/js/* ./output/js/
+                }
+
+                log "Generating favicon's"; {
+                    convert \
+                      -resize 16x16 \
+                      -background none \
+                      -gravity center \
+                      -extent 16x16 \
+                      src/images/logo.png \
+                      ./output/favicon.png
+
+                    convert \
+                      -resize x16 \
+                      -gravity center \
+                      -crop 16x16+0+0 \
+                      -flatten \
+                      -colors 256 \
+                      -background transparent \
+                      ./output/favicon.png \
+                      ./output/favicon.ico
+                }
+              '';
+              installPhase = ''
+                mkdir -p $out
+                cp -R ./output/* $out/
+              '';
+              shellHook = ''
+                rm -f styles/common-styles
+                ln -s ${nixos-common-styles.packages."${final.system}".commonStyles} styles/common-styles
+              '';
+            };
+          mkPyScript = dependencies: name:
+            let
+              pythonEnv = prev.pkgs.python3.buildEnv.override { extraLibs = dependencies; };
+            in
+            prev.pkgs.writeShellScriptBin name ''exec "${pythonEnv}/bin/python" "${toString ./.}/scripts/${name}.py" "$@"'';
+
         };
+    in
+    {
+      packages = forAllSystems (system:
+        let inherit (nixpkgsFor.${system}) mkWebsite mkPyScript python3Packages; in
+        {
+          nixos-summer = mkWebsite { };
+          nixos-summer-serve = mkPyScript (with python3Packages; [ click livereload ]) "serve";
+          nixos-summer-dev = mkWebsite { shell = true; };
+
+        });
+      defaultPackage = forAllSystems (system: self.packages.${system}.nixos-summer);
+      devPackage = forAllSystems (system: self.packages.${system}.nixos-summer-dev);
+
+    };
 }
