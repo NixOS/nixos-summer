@@ -17,13 +17,15 @@
 
 
       overlay = final: prev: {
-        inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage;
+        inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage mergeBlogPages;
         indexPage = final.mkPage {
           path = ./src/index.html;
           title = "Summer of Nix";
           body = readFile ./src/index.html;
         };
         blogPages = map final.mkBlogPage (import ./blog);
+        blogPageTitles = map (x: x.title) (import ./blog);
+        blogPageDerivation = final.mergeBlogPages final.blogPages final.blogPageTitles;
 
         mkWebsite = { shell ? false }:
           prev.pkgs.stdenv.mkDerivation {
@@ -45,7 +47,7 @@
               log "Building pages"; {
                   pushd ./output
                   ln -s ${final.indexPage} index.html
-                  ln -s ${elemAt final.blogPages 0} blog.html
+                  ln -s ${final.blogPageDerivation} blog
                   popd
               }
 

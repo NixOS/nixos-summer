@@ -7,6 +7,12 @@
           enableParallelBuilding = true;
        }) script;
 
+  mergeBlogPages = blogs: titles:
+    # FIXME point free?
+    let titlesNoWhitespace = map (title: pkgs.lib.stringAsChars (x: if x == " " then "_" else x) title) titles;
+        zipped = pkgs.lib.zipListsWith (blog: title: {name = title; path = blog; }) blogs titlesNoWhitespace;
+    in pkgs.linkFarm "blogs" zipped;
+
   mkBlogPage = { title, mdPath }:
     let
       path = runCommand "markdown2html"
