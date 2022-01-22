@@ -1,6 +1,40 @@
-{ pkgs }: {
+{ pkgs }: rec {
+
+  runCommand = name: args: script:
+       pkgs.runCommand name (args // {
+          runLocal = true;
+          preferLocalBuild = true;
+          enableParallelBuilding = true;
+       }) script;
+
+  mkBlogPage = { title, mdPath }:
+    let
+      path = runCommand "markdown2html"
+        { buildInputs = [ pkgs.pandoc ]; }
+        ''pandoc -- ${mdPath} >> $out'';
+    in
+    mkPage {
+      inherit title path;
+      body = ''
+        <section class="hero">
+          <div>
+            <div class="blurb">
+              <h1>The Summer of Nix Blog</h1>
+              <p>A series of blog posts detailing the experiences of the Summer of Nix participants.</p>
+              <div >
+                <a class="button -primary" href="#post">${title}</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="post" id="#post">
+          ${builtins.readFile path}
+        </section>
+      '';
+    };
   mkPage = { path, title, body }:
-    pkgs.writeText "${builtins.baseNameOf path}"
+    pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
         <!doctype html>
         <html lang="en" class="without-js">

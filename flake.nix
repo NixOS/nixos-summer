@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Summer of Nix website";
 
   inputs.nixpkgs = { url = "nixpkgs/nixos-unstable"; };
   inputs.nixos-common-styles = { url = "github:NixOS/nixos-common-styles"; };
@@ -7,8 +7,8 @@
   outputs =
     { self, nixpkgs, nixos-common-styles }:
     let
-      inherit (builtins) readFile baseNameOf dirOf concatStringsSep;
-      inherit (import ./utils.nix { inherit pkgs; }) mkPage;
+      inherit (builtins) readFile baseNameOf dirOf concatStringsSep elemAt;
+      inherit (import ./utils.nix { inherit pkgs; }) mkPage mkBlogPage;
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
 
@@ -18,11 +18,7 @@
         body = readFile ./src/index.html;
       };
 
-      blogPage = mkPage {
-        path = ./src/blog.html;
-        title = "Summer of Nix";
-        body = readFile ./src/blog.html;
-      };
+      blogPages = map mkBlogPage (import ./blog);
 
       mkWebsite = { shell ? false }:
         pkgs.stdenv.mkDerivation {
@@ -44,7 +40,7 @@
             log "Building pages"; {
                 pushd ./output
                 ln -s ${indexPage} index.html
-                ln -s ${blogPage} blog.html
+                ln -s ${elemAt blogPages 0} blog.html
                 popd
             }
 
