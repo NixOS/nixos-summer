@@ -37,25 +37,32 @@
     </section>
   '';
 
-  mkBlogsIndexPage = articles: mkPage {
-    title = "Summer of Nix - Blogs";
-    body = ''
-      <section class="hero">
-        <div>
-          <div class="blurb">
-            <h1>The Summer of Nix Blog</h1>
-            <p>A series of blog posts detailing the experiences of the Summer of Nix participants.</p>
-            <div class="button-tray">
-              <a class="button -primary" href="/#update-2021-06-02">Applications are closed</a>
-              <a class="button" href="/#about">Learn more</a>
-              <a class="button" href="/">Home</a>
-            </div>
+  mkHeader = { title, description, buttons ? [ ] }: ''
+    <section class="hero">
+      <div>
+        <div class="blurb">
+          <h1>${title}</h1>
+          <p>${description}</p>
+          <div class="button-tray">
+            ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'')buttons)}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  '';
 
-      ${builtins.concatStringsSep "\n" (map mkBlogSummarySection articles)}
-    '';
+  mkBlogsIndexPage = articles: mkPage {
+    title = "Summer of Nix - Blogs";
+    body = (mkHeader {
+      title = "The Summer of Nix Blog";
+      description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
+      buttons = [
+        { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; }
+        { href = "/#about"; title = "Learn more"; }
+        { href = "/"; title = "Home"; }
+      ];
+    }) +
+    (builtins.concatStringsSep "\n" (map mkBlogSummarySection articles));
   };
 
   mkBlogPage = { title, mdPath, ... }:
@@ -72,7 +79,7 @@
             <div class="blurb">
               <h1>The Summer of Nix Blog</h1>
               <p>A series of blog posts detailing the experiences of the Summer of Nix participants.</p>
-              <div >
+              <div>
                 <a class="button -primary" href="#post">${title}</a>
               </div>
             </div>
