@@ -37,14 +37,18 @@
     </section>
   '';
 
-  mkHeader = { title, description, buttons ? [ ] }: ''
+  applicationsClosedButton = { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; };
+  learnMoreButton = { href = "/#about"; title = "Learn more"; };
+  homeButton = { href = "/"; title = "Home"; };
+
+  mkHeader = { title, description, buttons ? [ applicationsClosedButton learnMoreButton homeButton ] }: ''
     <section class="hero">
       <div>
         <div class="blurb">
           <h1>${title}</h1>
           <p>${description}</p>
           <div class="button-tray">
-            ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'')buttons)}
+            ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'') buttons)}
           </div>
         </div>
       </div>
@@ -56,11 +60,6 @@
     header = mkHeader {
       title = "The Summer of Nix Blog";
       description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
-      buttons = [
-        { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; }
-        { href = "/#about"; title = "Learn more"; }
-        { href = "/"; title = "Home"; }
-      ];
     };
     body = map mkBlogSummarySection articles;
   };
@@ -70,16 +69,11 @@
     header = mkHeader {
       title = "The Summer of Nix Sponsors";
       description = "People who are making the world of Nix a better place.";
-      buttons = [
-        { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; }
-        { href = "/#about"; title = "Learn more"; }
-        { href = "/"; title = "Home"; }
-      ];
     };
     body = map mkSponsorsSection sponsors;
   };
 
-  mkBlogPage = { title, mdPath, ... }:
+  mkBlogPage = { title, mdPath, description }:
     let
       path = runCommand "markdown2html"
         { buildInputs = [ pkgs.pandoc ]; }
@@ -87,19 +81,11 @@
     in
     mkPage {
       inherit title;
+      header = mkHeader {
+        title = title;
+        description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
+      };
       body = ''
-        <section class="hero">
-          <div>
-            <div class="blurb">
-              <h1>The Summer of Nix Blog</h1>
-              <p>A series of blog posts detailing the experiences of the Summer of Nix participants.</p>
-              <div>
-                <a class="button -primary" href="#post">${title}</a>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section class="post" id="#post">
           ${builtins.readFile path}
         </section>
