@@ -9,18 +9,29 @@
       })
       script;
 
+  # like linkfarm but preserve names
+  linkFarmCustom = name: entries: pkgs.runCommand name { preferLocalBuild = true; allowSubstitutes = false; }
+    ''mkdir -p $out
+      cd $out
+      ${pkgs.lib.concatMapStrings (x: ''
+          ln -s ${pkgs.lib.escapeShellArg x.path} ${pkgs.lib.escapeShellArg x.name}
+      '') entries}
+    '';
+
   mergeBlogPages = blogs: titles:
     # FIXME point free?
     let
-      titlesNoWhitespace = map (title: pkgs.lib.stringAsChars (x: if x == " " then "_" else x) title) titles;
+      titlesNoWhitespace = map mkBlogTitle titles;
       zipped = pkgs.lib.zipListsWith (blog: title: { name = title; path = blog; }) blogs titlesNoWhitespace;
     in
-    pkgs.linkFarm "blogs" zipped;
+    linkFarmCustom "blogs" zipped;
+
+  mkBlogTitle = title: pkgs.lib.stringAsChars (x: if x == " " then "_" else x) title;
 
   mkBlogSummarySection = it: ''
     <section class="info">
       <div>
-        <a href="#abc"><h2>${it.title}</h2></a>
+        <a href="./${mkBlogTitle it.title}"><h2>${it.title}</h2></a>
         <p>${it.description}</p>
       </div>
     </section>

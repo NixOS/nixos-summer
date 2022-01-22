@@ -54,7 +54,7 @@
                     ln -s ${final.indexPage} index.html
                     mkdir blogs
                     ln -s ${final.blogsIndexPage} blogs/index.html
-                    ln -s ${final.blogPagesDerivation} blogs
+                    ln -s ${final.blogPagesDerivation}/* blogs
                     popd
                 }
 
