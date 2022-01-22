@@ -12,32 +12,17 @@
       pkgs = import nixpkgs { inherit system; };
       pages =
         [
-          { path = "index.html"; }
-          { path = "blog.html"; }
+          { path = "index.html"; title = "Summer of Nix"; }
+          { path = "blog.html"; title = "Summer of Nix"; }
         ];
-      mkPage =
-        { path, title ? null, body ? null }:
-        let
-          titleFinal =
-            if title == null
-            then "Summer of Nix"
-            else "Summer of Nix - ${title}";
-          bodyFinal =
-            if body == null
-            then readFile (self + "/" + path)
-            else body;
-          mkHeaderLink = { href, title, class ? "" }: ''
-            <li class="${class}">
-              <a href="${href}">${title}</a>
-            </li>
-          '';
-        in
+
+      mkPage = { path, title, body }:
         pkgs.writeText "${baseNameOf path}"
           ''
             <!doctype html>
             <html lang="en" class="without-js">
             <head>
-              <title>${titleFinal}</title>
+              <title>${title}</title>
               <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
               <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
               <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
@@ -50,7 +35,7 @@
             </head>
             <body>
               <main>
-                ${bodyFinal}
+                ${body}
               </main>
               <footer>
                 <div>
@@ -88,8 +73,7 @@
 
       buildPage = page: ''
         echo " -> /${page.path}"
-        mkdir -p ${dirOf page.path}
-        ln -s ${mkPage page} ${page.path}
+        ln -s ${mkPage (page // { body = readFile (self + "/src/" + page.path); })} ${baseNameOf page.path}
       '';
       mkWebsite = { shell ? false }:
         pkgs.stdenv.mkDerivation {
