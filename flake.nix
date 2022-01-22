@@ -18,7 +18,7 @@
 
       overlay = final: prev:
         let
-          inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage mkBlogsIndexPage mergeBlogPages;
+          inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage mkBlogsIndexPage mergeBlogPages mkSponsorsPage;
           articles = (import ./blog);
           blogPages = map mkBlogPage articles;
           blogPageTitles = map (x: x.title) articles;
@@ -30,6 +30,7 @@
           };
 
           blogsIndexPage = mkBlogsIndexPage articles;
+          sponsorsPage = mkSponsorsPage (import ./sponsors);
           blogPagesDerivation = mergeBlogPages blogPages blogPageTitles;
 
           mkWebsite = { shell ? false }:
@@ -52,6 +53,7 @@
                 log "Building pages"; {
                     pushd ./output
                     ln -s ${final.indexPage} index.html
+                    ln -s ${final.sponsorsPage} sponsors.html
                     mkdir blogs
                     ln -s ${final.blogsIndexPage} blogs/index.html
                     ln -s ${final.blogPagesDerivation}/* blogs

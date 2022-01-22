@@ -53,7 +53,7 @@
 
   mkBlogsIndexPage = articles: mkPage {
     title = "Summer of Nix - Blogs";
-    body = (mkHeader {
+    header = mkHeader {
       title = "The Summer of Nix Blog";
       description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
       buttons = [
@@ -61,8 +61,22 @@
         { href = "/#about"; title = "Learn more"; }
         { href = "/"; title = "Home"; }
       ];
-    }) +
-    (builtins.concatStringsSep "\n" (map mkBlogSummarySection articles));
+    };
+    body = map mkBlogSummarySection articles;
+  };
+  mkSponsorsSection = it: "";
+  mkSponsorsPage = sponsors: mkPage {
+    title = "Summer of Nix - Sponsors";
+    header = mkHeader {
+      title = "The Summer of Nix Sponsors";
+      description = "People who are making the world of Nix a better place.";
+      buttons = [
+        { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; }
+        { href = "/#about"; title = "Learn more"; }
+        { href = "/"; title = "Home"; }
+      ];
+    };
+    body = map mkSponsorsSection sponsors;
   };
 
   mkBlogPage = { title, mdPath, ... }:
@@ -91,7 +105,7 @@
         </section>
       '';
     };
-  mkPage = { title, body }:
+  mkPage = { title, header ? "", body }:
     pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
         <!doctype html>
@@ -110,7 +124,8 @@
         </head>
         <body>
           <main>
-            ${body}
+            ${header}
+            ${toString body}
           </main>
           <footer>
             <div>
