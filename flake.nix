@@ -1,104 +1,119 @@
 {
   description = "Summer of Nix website";
 
-  inputs.nixpkgs = { url = "nixpkgs/nixos-unstable"; };
-  inputs.nixos-common-styles = { url = "github:NixOS/nixos-common-styles"; };
+  inputs.nixpkgs = { url = "nixpkgs/master"; };
+  inputs.nixos-common-styles = { 
+    url = "github:DieracDelta/nixos-common-styles/multi-arch";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   outputs =
     { self, nixpkgs, nixos-common-styles }:
     let
+      supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ overlay ]; });
       inherit (builtins) readFile baseNameOf dirOf concatStringsSep elemAt;
-      inherit (import ./utils.nix { inherit pkgs; }) mkPage mkBlogPage;
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
 
-      indexPage = mkPage {
-        path = ./src/index.html;
-        title = "Summer of Nix";
-        body = readFile ./src/index.html;
-      };
 
-      blogPages = map mkBlogPage (import ./blog);
+      overlay = final: prev: {
+        inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage;
+        indexPage = final.mkPage {
+          path = ./src/index.html;
+          title = "Summer of Nix";
+          body = readFile ./src/index.html;
+        };
+        blogPages = map final.mkBlogPage (import ./blog);
 
-      mkWebsite = { shell ? false }:
-        pkgs.stdenv.mkDerivation {
-          name = "nixos-summer-${self.lastModifiedDate}";
-          src = self;
-          preferLocalBuild = true;
-          enableParallelBuilding = true;
-          buildInputs = with pkgs; [
-            imagemagick
-            nodePackages.less
-          ];
-          buildPhase = ''
-            function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
+        mkWebsite = { shell ? false }:
+          prev.pkgs.stdenv.mkDerivation {
+            name = "nixos-summer-${self.lastModifiedDate}";
+            src = self;
+            preferLocalBuild = true;
+            enableParallelBuilding = true;
+            buildInputs = with prev.pkgs; [
+              imagemagick
+              nodePackages.less
+            ];
+            buildPhase = ''
+              function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
 
-            log "Make folder structure"; {
-                mkdir -p ./output/{styles/fonts,js}
-            }
+              log "Make folder structure"; {
+                  mkdir -p ./output/{styles/fonts,js}
+              }
 
-            log "Building pages"; {
-                pushd ./output
-                ln -s ${indexPage} index.html
-                ln -s ${elemAt blogPages 0} blog.html
-                popd
-            }
+              log "Building pages"; {
+                  pushd ./output
+                  ln -s ${final.indexPage} index.html
+                  ln -s ${elemAt final.blogPages 0} blog.html
+                  popd
+              }
 
-            log "Generating styles"; {
-                ln -sf ${nixos-common-styles.packages."${system}".commonStyles} src/styles/common-styles
+              log "Generating styles"; {
+                ln -sf ${nixos-common-styles.packages."${final.system}".commonStyles} src/styles/common-styles
+
                 lessc --verbose \
-                  --source-map=styles/index.css.map \
+                  --math=strict --source-map=$(pwd)/styles/index.css.map \
                   src/styles/index.less \
                   ./output/styles/index.css
-            }
+                cp $(pwd)/styles/index.css.map $(pwd)/output/styles/index.css.map
+              }
 
-            log "Copying fonts and js to output"; {
-                cp -R src/images ./output/images
-                cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
-                cp -R src/js/* ./output/js/
-            }
 
-            log "Generating favicon's"; {
-                convert \
-                  -resize 16x16 \
-                  -background none \
-                  -gravity center \
-                  -extent 16x16 \
-                  src/images/logo.png \
-                  ./output/favicon.png
+              log "Copying fonts and js to output"; {
+                  cp -R src/images ./output/images
+                  cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
+                  cp -R src/js/* ./output/js/
+              }
 
-                convert \
-                  -resize x16 \
-                  -gravity center \
-                  -crop 16x16+0+0 \
-                  -flatten \
-                  -colors 256 \
-                  -background transparent \
-                  ./output/favicon.png \
-                  ./output/favicon.ico
-            }
-          '';
-          installPhase = ''
-            mkdir -p $out
-            cp -R ./output/* $out/
-          '';
-          shellHook = ''
-            rm -f styles/common-styles
-            ln -s ${nixos-common-styles.packages."${system}".commonStyles} styles/common-styles
-          '';
-        };
-      mkPyScript = dependencies: name:
-        let
-          pythonEnv = pkgs.python3.buildEnv.override { extraLibs = dependencies; };
-        in
-        pkgs.writeShellScriptBin name ''exec "${pythonEnv}/bin/python" "${toString ./.}/scripts/${name}.py" "$@"'';
+              log "Generating favicon's"; {
+                  convert \
+                    -resize 16x16 \
+                    -background none \
+                    -gravity center \
+                    -extent 16x16 \
+                    src/images/logo.png \
+                    ./output/favicon.png
+
+                  convert \
+                    -resize x16 \
+                    -gravity center \
+                    -crop 16x16+0+0 \
+                    -flatten \
+                    -colors 256 \
+                    -background transparent \
+                    ./output/favicon.png \
+                    ./output/favicon.ico
+              }
+            '';
+            installPhase = ''
+              mkdir -p $out
+              cp -R ./output/* $out/
+            '';
+            shellHook = ''
+              rm -f styles/common-styles
+              ln -s ${nixos-common-styles.packages."${final.system}".commonStyles} styles/common-styles
+            '';
+          };
+        mkPyScript = dependencies: name:
+          let
+            pythonEnv = prev.pkgs.python3.buildEnv.override { extraLibs = dependencies; };
+          in
+          prev.pkgs.writeShellScriptBin name ''exec "${pythonEnv}/bin/python" "${toString ./.}/scripts/${name}.py" "$@"'';
+
+      };
     in
     {
-      packages."${system}" = {
-        nixos-summer = mkWebsite { };
-        nixos-summer-serve = mkPyScript (with pkgs.python3Packages; [ click livereload ]) "serve";
-      };
-      defaultPackage."${system}" = self.packages."${system}".nixos-summer;
-      devPackage."${system}" = mkWebsite { shell = true; };
+      packages = forAllSystems (system: 
+        let inherit (nixpkgsFor.${system}) mkWebsite mkPyScript python3Packages; in
+      {
+        nixos-summer = mkWebsite {};
+        nixos-summer-serve = mkPyScript (with python3Packages; [ click livereload ]) "serve";
+        nixos-summer-dev = mkWebsite { shell = true; };
+
+      });
+      defaultPackage = forAllSystems (system: self.packages.${system}.nixos-summer);
+      devPackage = forAllSystems (system: self.packages.${system}.nixos-summer-dev);
+
     };
 }

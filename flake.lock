@@ -2,56 +2,44 @@
   "nodes": {
     "nixos-common-styles": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1611146459,
-        "narHash": "sha256-mR8IBalisriPYMWWc2ft7XanqgOgN/yXzi7DaWF66/0=",
-        "owner": "NixOS",
+        "lastModified": 1642860729,
+        "narHash": "sha256-N4zfIoOqhp18FJu1BotbR3FmsbdCqwhAASUHNqWl+5Q=",
+        "owner": "DieracDelta",
         "repo": "nixos-common-styles",
-        "rev": "fec8be7a02089f49a8020c20319f7de43b9e138a",
+        "rev": "c9c880bb27934536804e1b59cfc88b5f8d79c0cc",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "owner": "DieracDelta",
+        "ref": "multi-arch",
         "repo": "nixos-common-styles",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1607327113,
-        "narHash": "sha256-QK/qV1AaLnGEu+KwiPX7vSxzU9lMB6zM+kIbvjJo54k=",
+        "lastModified": 1642866177,
+        "narHash": "sha256-xeT84bKH9SYelfBri5U9cebUSs8CeXTfYYlBVYbdjV8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "83cbad92d73216bb0d9187c56cce0b91f9121d5a",
+        "rev": "bfda60273b31c2251c92488acf83ca655619d34e",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "nixos-unstable",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1592263354,
-        "narHash": "sha256-1wHPn5qKfzfG06dZhpXDEg5Zt6HwvfyPPgW1tkYFejg=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "a84b797b28eb104db758b5cb2b61ba8face6744b",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-unstable",
+        "ref": "master",
         "type": "indirect"
       }
     },
     "root": {
       "inputs": {
         "nixos-common-styles": "nixos-common-styles",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs"
       }
     }
   },
