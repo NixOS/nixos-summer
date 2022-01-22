@@ -53,7 +53,7 @@
                 ln -sf ${nixos-common-styles.packages."${final.system}".commonStyles} src/styles/common-styles
 
                 lessc --verbose \
-                  --math=strict --source-map=$(pwd)/styles/index.css.map \
+                  --math=always --source-map=$(pwd)/styles/index.css.map \
                   src/styles/index.less \
                   ./output/styles/index.css
                 cp $(pwd)/styles/index.css.map $(pwd)/output/styles/index.css.map
