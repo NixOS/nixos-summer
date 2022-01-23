@@ -31,7 +31,7 @@
   mkBlogSummarySection = it: ''
     <section class="info">
       <div>
-        <a href="./${mkBlogTitle it.title}"><h2>${it.title}</h2></a>
+        <a href="./${mkBlogTitle it.title}"><h2>${it.date} ${it.title} - ${it.author} </h2></a>
         <p>${it.description}</p>
       </div>
     </section>
@@ -40,12 +40,28 @@
   applicationsClosedButton = { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; };
   learnMoreButton = { href = "/#about"; title = "Learn more"; };
   homeButton = { href = "/"; title = "Home"; };
+  defaultButtons = [ applicationsClosedButton learnMoreButton homeButton ];
 
-  mkHeader = { title, description, buttons ? [ applicationsClosedButton learnMoreButton homeButton ] }: ''
+  mkHeader = { title, description, buttons ? defaultButtons, ... }: ''
     <section class="hero">
       <div>
         <div class="blurb">
           <h1>${title}</h1>
+          <p>${description}</p>
+          <div class="button-tray">
+            ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'') buttons)}
+          </div>
+        </div>
+      </div>
+    </section>
+  '';
+
+  mkBlogHeader = { title, description, buttons ? defaultButtons, author, date, ... }: ''
+    <section class="hero">
+      <div>
+        <div class="blurb">
+          <h1>${title}</h1>
+          <h4>${date} - ${author} </h4>
           <p>${description}</p>
           <div class="button-tray">
             ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'') buttons)}
@@ -73,7 +89,7 @@
     body = map mkSponsorsSection sponsors;
   };
 
-  mkBlogPage = { title, mdPath, description }:
+  mkBlogPage = info@{ title, mdPath, description, author, date, ... }:
     let
       path = runCommand "markdown2html"
         { buildInputs = [ pkgs.pandoc ]; }
@@ -81,10 +97,9 @@
     in
     mkPage {
       inherit title;
-      header = mkHeader {
-        title = title;
+      header = mkBlogHeader (info // {
         description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
-      };
+      });
       body = ''
         <section class="post" id="#post">
           ${builtins.readFile path}
