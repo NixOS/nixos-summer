@@ -93,22 +93,31 @@
     let
       path = runCommand "markdown2html"
         { buildInputs = [ pkgs.pandoc ]; }
-        ''pandoc -- ${mdPath} >> $out'';
+        ''pandoc -t html5 --no-highlight ${mdPath} >> $out'';
     in
     mkPage {
+      extra-links =
+        ''
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        '';
+
       inherit title;
       header = mkBlogHeader (info // {
         description = "A series of blog posts detailing the experiences of the Summer of Nix participants.";
       });
       body = ''
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/components/prism-core.min.js" integrity="sha512-NC2WFBzw/SdbWrzG0C+sg3iv1OITcQKsUitDcYKfOp9vxe92zpNlRc5Ad3q81kAp8Ff/fDV8pZQxdCCeyFdgLw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/components/prism-nix.min.js" integrity="sha512-kvMZ1NV1faCpNs9FZlhvnWQ1iiU93GalWptzmvYRJDXQCb+wK/dR9oB3hTRmTA7c2CeEbEfjGDMM3j+CVlhr6Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-GP4x8UWxWyh4BMbyJGOGneiTbkrWEF5izsVJByzVLodP8CuJH/n936+yQDMJJrOPUHLgyPbLiGw2rXmdvGdXHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <section class="post" id="#post">
           ${builtins.readFile path}
         </section>
       '';
     };
-  mkPage = { title, header ? "", body }:
+  mkPage = { title, header ? "", body, extra-links ? "" }:
     pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
+        ${extra-links}
         <!doctype html>
         <html lang="en" class="without-js">
         <head>

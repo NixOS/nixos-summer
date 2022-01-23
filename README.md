@@ -37,3 +37,16 @@ Happy hacking!
 The content of the website is licensed under the [Creative Commons Attribution
 Share Alike 4.0 International](LICENSE.txt) license.
 
+## Contributing to blog
+
+To contribute a blog post, one must:
+- Add a nix attrset describing their blog post to the list `blog/default.nix`
+- Add a markdown file to the `blog/` directory. Note that for `nix` syntax highlighting, one must include `language-nix` as the specified language. E.g.
+
+```
+\`\`\`language-nix
+#some-nix-code
+\`\`\`
+```
+
+

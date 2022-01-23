@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1642860729,
-        "narHash": "sha256-N4zfIoOqhp18FJu1BotbR3FmsbdCqwhAASUHNqWl+5Q=",
+        "lastModified": 1642952391,
+        "narHash": "sha256-woDTgfyniHyRoZ3ouSTULXv5J8rrptZaSq4v7r5JQ5E=",
         "owner": "DieracDelta",
         "repo": "nixos-common-styles",
-        "rev": "c9c880bb27934536804e1b59cfc88b5f8d79c0cc",
+        "rev": "c64253cf852a2a72d4131737fcf14210f2b56d6b",
         "type": "github"
       },
       "original": {
