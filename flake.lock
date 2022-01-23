@@ -1,22 +1,37 @@
 {
   "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1642700792,
+        "narHash": "sha256-XqHrk7hFb+zBvRg6Ghl+AZDq03ov6OshJLiSWOoX5es=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "846b2ae0fc4cc943637d3d1def4454213e203cba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "nixos-common-styles": {
       "inputs": {
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1642952391,
-        "narHash": "sha256-woDTgfyniHyRoZ3ouSTULXv5J8rrptZaSq4v7r5JQ5E=",
-        "owner": "DieracDelta",
+        "lastModified": 1642894165,
+        "narHash": "sha256-Qbz/1l+jR+/xuov0kEEzrsmcqqwuxtEf1qLkiR3N+VQ=",
+        "owner": "NixOS",
         "repo": "nixos-common-styles",
-        "rev": "c64253cf852a2a72d4131737fcf14210f2b56d6b",
+        "rev": "d47fac471b32d73b5ee61aa29b6afc5bf12b2b61",
         "type": "github"
       },
       "original": {
-        "owner": "DieracDelta",
-        "ref": "multi-arch",
+        "owner": "NixOS",
         "repo": "nixos-common-styles",
         "type": "github"
       }

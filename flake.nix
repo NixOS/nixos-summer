@@ -3,7 +3,7 @@
 
   inputs.nixpkgs = { url = "nixpkgs/master"; };
   inputs.nixos-common-styles = {
-    url = "github:DieracDelta/nixos-common-styles/multi-arch";
+    url = "github:NixOS/nixos-common-styles";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 

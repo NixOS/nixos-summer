@@ -96,9 +96,12 @@
         ''pandoc -t html5 --no-highlight ${mdPath} >> $out'';
     in
     mkPage {
-      extra-links =
+      header-extra =
         ''
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.26.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+          code { border: 0px !important;}
+        </style>
         '';
 
       inherit title;
@@ -114,10 +117,10 @@
         </section>
       '';
     };
-  mkPage = { title, header ? "", body, extra-links ? "" }:
+  mkPage = { title, header ? "", body, header-extra ? "" }:
     pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
-        ${extra-links}
+        ${header-extra}
         <!doctype html>
         <html lang="en" class="without-js">
         <head>
