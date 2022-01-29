@@ -64,7 +64,7 @@
           <h4>${date} - ${author} </h4>
           <p>${description}</p>
           <div class="button-tray">
-            ${builtins.concatStringsSep "\n" (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'') buttons)}
+            ${toString (map (it: ''<a class="button ${it.class or ""}" href="${it.href}">${it.title}</a>'') buttons)}
           </div>
         </div>
       </div>
