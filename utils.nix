@@ -117,13 +117,13 @@
         </section>
       '';
     };
-  mkPage = { title, header ? "", body, header-extra ? "" }:
+  mkPage = { title, header ? "", body, headerExtra ? "" }:
     pkgs.writeText (builtins.replaceStrings [ " " ] [ "-" ] title)
       ''
-        ${header-extra}
         <!doctype html>
         <html lang="en" class="without-js">
         <head>
+             ${headerExtra}
           <title>${title}</title>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
           <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
