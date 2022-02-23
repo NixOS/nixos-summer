@@ -47,7 +47,7 @@
                 function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
 
                 log "Make folder structure"; {
-                    mkdir -p ./output/{styles/fonts,js}
+                    mkdir -p ./output/{styles/fonts,js,assets}
                 }
 
                 log "Building pages"; {
@@ -70,8 +70,8 @@
                   cp $(pwd)/styles/index.css.map $(pwd)/output/styles/index.css.map
                 }
 
-
-                log "Copying fonts and js to output"; {
+                log "Copying assets (fonts, images, documents, ...) to output"; {
+                    cp -R assets ./output/
                     cp -R src/images ./output/images
                     cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
                     cp -R src/js/* ./output/js/
