@@ -37,11 +37,11 @@
     </section>
   '';
 
-  applicationsClosedButton = { class = "-primary"; href = "/#update-2021-06-02"; title = "Applications are closed"; };
+  applyButton = { class = "-primary"; href = "/#update-2022-04-04"; title = "Apply"; };
   learnMoreButton = { href = "/#about"; title = "Learn more"; };
   homeButton = { href = "/"; title = "Home"; };
 
-  mkHeader = { title, description, buttons ? [ applicationsClosedButton learnMoreButton homeButton ] }: ''
+  mkHeader = { title, description, buttons ? [ applyButton learnMoreButton homeButton ] }: ''
     <section class="hero">
       <div>
         <div class="blurb">
