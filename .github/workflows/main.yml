@@ -14,19 +14,14 @@ jobs:
         fetch-depth: 0
         submodules: true
 
-    - uses: cachix/install-nix-action@v12
+    - uses: cachix/install-nix-action@v17
       with:
-        install_url: https://github.com/numtide/nix-flakes-installer/releases/download/nix-2.4pre20210823_af94b54/install
+        nix_path: nixpkgs=channel:nixos-unstable
         extra_nix_config:
           experimental-features = nix-command flakes
 
     - name: Building summer.nixos.org
       run: |
-        nix build "github:NixOS/nix?rev=1ec4efa6c82fb6d90887c21aa7c7c6f3c644dd65" -o nix
-        PATH="$PWD/nix/bin/:$PATH"
-        export PATH
-        echo "PATH=${PATH}" >> $GITHUB_ENV
-        nix --version
         nix build
         mkdir build
         cp -RL ./result/* ./build/
