@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:Zola
+{% set section = get_section(path="announcements/_index.md") -%}
+{% for page in section.pages -%}
+{% if page.extra.event_start and page.extra.event_end -%}
+BEGIN:VEVENT
+SUMMARY:{{ page.title }}
+DTSTART;VALUE=DATE-TIME:{{ page.extra.event_start | date(format="%Y%m%dT%H%M%SZ", timezone="Etc/UTC") }}
+DTEND;VALUE=DATE-TIME:{{ page.extra.event_end | date(format="%Y%m%dT%H%M%SZ", timezone="Etc/UTC") }}
+DTSTAMP:{{ page.date | date(format="%Y%m%dT%H%M%SZ", timezone="Etc/UTC") }}
+UID:{{ page.slug }}@summer.nixos.org
+DESCRIPTION:{% if page.description %}{{ page.description }}\n\n{% endif %}See {{ page.permalink | safe }} for details.
+END:VEVENT
+{% endif -%}
+{% endfor -%}
+END:VCALENDAR
