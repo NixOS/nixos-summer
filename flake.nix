@@ -1,29 +1,21 @@
 {
   description = "Summer of Nix website";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-  outputs =
-    { self, nixpkgs }:
+  outputs = { self, nixpkgs }:
     let
-      supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ overlay ]; });
-      inherit (builtins) readFile baseNameOf dirOf concatStringsSep elemAt;
-
-      overlay = final: prev: {
-        nixos-summer = prev.stdenv.mkDerivation {
-          name = "nixos-summer";
-
-          nativeBuildInputs = with prev; [
-            imagemagick
-            zola
-          ];
-
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    in
+    {
+      packages = forAllSystems (system: rec {
+        nixos-summer-website = nixpkgsFor.${system}.stdenvNoCC.mkDerivation {
+          name = "nixos-summer-website";
           src = self;
-
+          nativeBuildInputs = with nixpkgsFor.${system}; [ zola imagemagick ];
           buildPhase = ''
-            runHook preBuild
             zola build
 
             convert \
@@ -33,7 +25,6 @@
               -extent 16x16 \
               static/images/logo.png \
               public/favicon.png
-
             convert \
               -resize x16 \
               -gravity center \
@@ -43,21 +34,16 @@
               -background transparent \
               public/favicon.png \
               public/favicon.ico
-            runHook postBuild
           '';
-
-          installPhase = ''
-            runHook preInstall
-            cp -r public $out
-            runHook postInstall
-          '';
+          installPhase = "cp -r public $out";
         };
-      };
-    in
-    {
-      packages = forAllSystems (system: rec {
-        inherit (nixpkgsFor.${system}) nixos-summer;
-        default = nixos-summer;
+        default = nixos-summer-website;
+      });
+
+      devShells = forAllSystems (system: {
+        default = nixpkgsFor.${system}.mkShellNoCC {
+          packages = with nixpkgsFor.${system}; [ zola ];
+        };
       });
     };
 }
