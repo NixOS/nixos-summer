@@ -1,0 +1,10 @@
+<article>
+  {% set post_level = post_level | default(value=0) %}
+  {% set truncate_post = truncate_post | default(value=0) %}
+
+  {% set heading = 2 + post_level %}
+  <h{{ heading }}><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h{{ heading }}>
+  {% if page.date %}<div>Published on {{ page.date | date(format="%Y-%m-%d") }}</div>{% endif %}
+
+  {{ page.content | safe }}
+</article>

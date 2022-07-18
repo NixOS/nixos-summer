@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} – {% endif %}{{ config.title }}</title>
+    <link rel="stylesheet" href="{{ get_url(path="style.css") | safe }}">
+    <meta name="description" content="{% if page.description %}{{ page.description | trim }}{% else %}{{ config.description | trim }}{% endif %}">
+  </head>
+  <body>
+    <nav>
+      {% for link in config.extra.navbar.links %}
+      <a href="{{ get_url(path=link.target) | safe }}">{{ link.title }}</a>
+      {% endfor %}
+    </nav>
+    <main>
+      {% block content %}{% endblock content %}
+    </main>
+    <footer>
+    </footer>
+  </body>
+</html>

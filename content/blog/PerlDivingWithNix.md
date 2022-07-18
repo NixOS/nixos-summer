@@ -1,4 +1,7 @@
-# Perl Diving with Nix
+---
+title: Perl Diving with Nix
+date: 2021-10-01 # estimated
+---
 
 This is a record of my time in the Summer of Nix holding my breath and diving into the depths of Nix to gain some Perls of wisdom.
 

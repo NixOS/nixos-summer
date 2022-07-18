@@ -1,0 +1,52 @@
+base_url = "https://summer.nixos.org"
+lang = "en"
+title = "The Summer of Nix"
+description = "A two month train and work program from July 18th to September 30th 2022 – great for anyone who wants to rapidly increase their Nix skills while doing useful work."
+
+compile_sass = true
+
+[markdown]
+highlight_code = true
+
+[extra]
+
+[[extra.navbar.links]]
+title = "Summer of Nix"
+target = "/"
+
+[[extra.navbar.links]]
+title = "Blog"
+target = "@/blog/_index.md"
+
+[[extra.navbar.links]]
+title = "Videos"
+target = "@/videos/_index.md"
+
+[[extra.navbar.links]]
+title = "Announcements"
+target = "@/announcements/_index.md"
+
+[[extra.acknowledgements]]
+name = "European Comission"
+link = "https://ec.europa.eu/info/departments/communications-networks-content-and-technology_en"
+logo = "ec.svg"
+
+[[extra.acknowledgements]]
+name = "nlnet"
+link = "https://nlnet.nl/"
+logo = "nlnet.png"
+
+[[extra.acknowledgements]]
+name = "NGI Zero"
+link = "https://nlnet.nl/assure"
+logo = "ngi_zero.svg"
+
+[[extra.acknowledgements]]
+name = "NixOS Foundation"
+link = "https://github.com/NixOS/nixos-foundation"
+logo = "nix.svg"
+
+[[extra.acknowledgements]]
+name = "Tweag"
+link = "https://www.tweag.io/"
+logo = "tweag.svg"

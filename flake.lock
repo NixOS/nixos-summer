@@ -1,44 +1,22 @@
 {
   "nodes": {
-    "nixos-common-styles": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1642860729,
-        "narHash": "sha256-N4zfIoOqhp18FJu1BotbR3FmsbdCqwhAASUHNqWl+5Q=",
-        "owner": "DieracDelta",
-        "repo": "nixos-common-styles",
-        "rev": "c9c880bb27934536804e1b59cfc88b5f8d79c0cc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "DieracDelta",
-        "ref": "multi-arch",
-        "repo": "nixos-common-styles",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1642866177,
-        "narHash": "sha256-xeT84bKH9SYelfBri5U9cebUSs8CeXTfYYlBVYbdjV8=",
+        "lastModified": 1658015103,
+        "narHash": "sha256-mO+23f3SO+fBzEvbxRe6GkSB5Xp43CT2sV8Rs8MYdz8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "bfda60273b31c2251c92488acf83ca655619d34e",
+        "rev": "8f485713f5e6b6883a9b6959afa98688360a3ecb",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "master",
+        "ref": "nixos-unstable",
         "type": "indirect"
       }
     },
     "root": {
       "inputs": {
-        "nixos-common-styles": "nixos-common-styles",
         "nixpkgs": "nixpkgs"
       }
     }

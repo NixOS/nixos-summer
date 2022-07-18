@@ -1,130 +1,63 @@
 {
   description = "Summer of Nix website";
 
-  inputs.nixpkgs = { url = "nixpkgs/master"; };
-  inputs.nixos-common-styles = {
-    url = "github:DieracDelta/nixos-common-styles/multi-arch";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
   outputs =
-    { self, nixpkgs, nixos-common-styles }:
+    { self, nixpkgs }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; overlays = [ overlay ]; });
       inherit (builtins) readFile baseNameOf dirOf concatStringsSep elemAt;
 
+      overlay = final: prev: {
+        nixos-summer = prev.stdenv.mkDerivation {
+          name = "nixos-summer";
 
-      overlay = final: prev:
-        let
-          inherit (import ./utils.nix { pkgs = prev.pkgs; }) mkPage mkBlogPage mkBlogsIndexPage mergeBlogPages mkSponsorsPage;
-          articles = (import ./blog);
-          blogPages = map mkBlogPage articles;
-          blogPageTitles = map (x: x.title) articles;
-        in
-        {
-          indexPage = mkPage {
-            title = "Summer of Nix";
-            body = readFile ./src/index.html;
-          };
+          nativeBuildInputs = with prev; [
+            imagemagick
+            zola
+          ];
 
-          blogsIndexPage = mkBlogsIndexPage articles;
-          sponsorsPage = mkSponsorsPage (import ./sponsors);
-          blogPagesDerivation = mergeBlogPages blogPages blogPageTitles;
+          src = self;
 
-          mkWebsite = { shell ? false }:
-            prev.pkgs.stdenv.mkDerivation {
-              name = "nixos-summer-${self.lastModifiedDate}";
-              src = self;
-              preferLocalBuild = true;
-              enableParallelBuilding = true;
-              buildInputs = with prev.pkgs; [
-                imagemagick
-                nodePackages.less
-              ];
-              buildPhase = ''
-                function log() {  printf '\033[31;1m=>\033[m %s\n' "$@"; }
+          buildPhase = ''
+            runHook preBuild
+            zola build
 
-                log "Make folder structure"; {
-                    mkdir -p ./output/{styles/fonts,js,assets}
-                }
+            convert \
+              -resize 16x16 \
+              -background none \
+              -gravity center \
+              -extent 16x16 \
+              static/images/logo.png \
+              public/favicon.png
 
-                log "Building pages"; {
-                    pushd ./output
-                    ln -s ${final.indexPage} index.html
-                    ln -s ${final.sponsorsPage} sponsors.html
-                    mkdir blogs
-                    ln -s ${final.blogsIndexPage} blogs/index.html
-                    ln -s ${final.blogPagesDerivation}/* blogs
-                    popd
-                }
+            convert \
+              -resize x16 \
+              -gravity center \
+              -crop 16x16+0+0 \
+              -flatten \
+              -colors 256 \
+              -background transparent \
+              public/favicon.png \
+              public/favicon.ico
+            runHook postBuild
+          '';
 
-                log "Generating styles"; {
-                  ln -sf ${nixos-common-styles.packages."${final.system}".commonStyles} src/styles/common-styles
-
-                  lessc --verbose \
-                    --math=always --source-map=$(pwd)/styles/index.css.map \
-                    src/styles/index.less \
-                    ./output/styles/index.css
-                  cp $(pwd)/styles/index.css.map $(pwd)/output/styles/index.css.map
-                }
-
-                log "Copying assets (fonts, images, documents, ...) to output"; {
-                    cp -R assets ./output/
-                    cp -R src/images ./output/images
-                    cp -R src/styles/common-styles/fonts/*.ttf ./output/styles/fonts/
-                    cp -R src/js/* ./output/js/
-                }
-
-                log "Generating favicon's"; {
-                    convert \
-                      -resize 16x16 \
-                      -background none \
-                      -gravity center \
-                      -extent 16x16 \
-                      src/images/logo.png \
-                      ./output/favicon.png
-
-                    convert \
-                      -resize x16 \
-                      -gravity center \
-                      -crop 16x16+0+0 \
-                      -flatten \
-                      -colors 256 \
-                      -background transparent \
-                      ./output/favicon.png \
-                      ./output/favicon.ico
-                }
-              '';
-              installPhase = ''
-                mkdir -p $out
-                cp -R ./output/* $out/
-              '';
-              shellHook = ''
-                rm -f styles/common-styles
-                ln -s ${nixos-common-styles.packages."${final.system}".commonStyles} styles/common-styles
-              '';
-            };
-          mkPyScript = dependencies: name:
-            let
-              pythonEnv = prev.pkgs.python3.buildEnv.override { extraLibs = dependencies; };
-            in
-            prev.pkgs.writeShellScriptBin name ''exec "${pythonEnv}/bin/python" "${toString ./.}/scripts/${name}.py" "$@"'';
-
+          installPhase = ''
+            runHook preInstall
+            cp -r public $out
+            runHook postInstall
+          '';
         };
+      };
     in
     {
-      packages = forAllSystems (system:
-        let inherit (nixpkgsFor.${system}) mkWebsite mkPyScript python3Packages; in
-        {
-          nixos-summer = mkWebsite { };
-          nixos-summer-serve = mkPyScript (with python3Packages; [ click livereload ]) "serve";
-          nixos-summer-dev = mkWebsite { shell = true; };
-
-        });
-      defaultPackage = forAllSystems (system: self.packages.${system}.nixos-summer);
-      devPackage = forAllSystems (system: self.packages.${system}.nixos-summer-dev);
-
+      packages = forAllSystems (system: rec {
+        inherit (nixpkgsFor.${system}) nixos-summer;
+        default = nixos-summer;
+      });
     };
 }

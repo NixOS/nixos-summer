@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content -%}
+<h1>{{ section.title }}</h1>
+{% if section.description %}<h3>{{ section.description }}</h1>{% endif %}
+{% if section.content %}{{ section.content }}{% endif %}
+{% for page in section.pages %}
+{% include "post.html" %}
+{% endfor %}
+{%- endblock content %}
