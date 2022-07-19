@@ -29,6 +29,32 @@
       {% block content %}{% endblock content %}
     </main>
     <footer>
+      <div>
+        <div class="lower">
+          <section class="footer-copyright">
+            <h4>NixOS</h4>
+            <div>
+              <span>
+                Copyright © 2022 NixOS contributors
+              </span>
+              <a href="https://github.com/NixOS/nixos-summer/blob/main/LICENSE.txt">
+                <abbr title="Creative Commons Attribution Share Alike 4.0 International">
+                  CC-BY-SA-4.0
+                </abbr>
+              </a>
+            </div>
+          </section>
+          <section class="footer-social">
+            <h4>Connect with us</h4>
+            <ul>
+              <li class="social-icon -twitter"><a href="https://twitter.com/nixos_org">Twitter</a></li>
+              <li class="social-icon -youtube"><a
+                  href="https://www.youtube.com/channel/UC3vIimi9q4AT8EgxYp_dWIw">Youtube</a></li>
+              <li class="social-icon -github"><a href="https://github.com/NixOS">GitHub</a></li>
+            </ul>
+          </section>
+        </div>
+      </div>
     </footer>
     <script src="{{ get_url(path="script.js") | safe }}"></script>
   </body>
