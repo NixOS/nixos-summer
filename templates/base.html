@@ -11,7 +11,7 @@
     <link rel="alternate" type="application/rss+xml" title="Blog articles" href="{{ get_url(path="blog/atom.xml", trailing_slash=false) }}">
     <link rel="alternate" type="application/rss+xml" title="Videos" href="{{ get_url(path="videos/atom.xml", trailing_slash=false) }}">
   </head>
-  <body>
+  <body class="{% if page.extra.fullscreen %}fullscreen{% endif %}">
     <header>
       <div>
         <a class="title" href="/">{{ config.title }}</a>
