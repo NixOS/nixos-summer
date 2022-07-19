@@ -12,15 +12,24 @@
     <link rel="alternate" type="application/rss+xml" title="Videos" href="{{ get_url(path="videos/atom.xml", trailing_slash=false) }}">
   </head>
   <body>
-    <nav>
-      {% for link in config.extra.navbar.links %}
-      <a href="{{ get_url(path=link.target) | safe }}">{{ link.title }}</a>
-      {% endfor %}
-    </nav>
+    <header>
+      <div>
+        <a class="title" href="/">{{ config.title }}</a>
+        <nav style="display: none;">
+          <ul>
+            {% for link in config.extra.navbar.links -%}
+            <li{% if current_path == link.target %} class="active"{% endif %}><a href="{{ get_url(path=link.target) | safe }}">{{ link.title }}</a></li>
+            {%- endfor %}
+          </ul>
+        </nav>
+      </div>
+      <button class="menu-toggle">Toggle the menu</button>
+    </header>
     <main>
       {% block content %}{% endblock content %}
     </main>
     <footer>
     </footer>
+    <script src="{{ get_url(path="script.js") | safe }}"></script>
   </body>
 </html>
