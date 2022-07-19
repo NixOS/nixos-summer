@@ -10,6 +10,7 @@
 // PAGES:
 
 @import "./pages/index";
+@import "./pages/blog";
 
 html {
   scroll-padding-top: 4rem;
@@ -20,4 +21,13 @@ header {
     font-size: 1.5rem;
     font-weight: bold;
   }
+}
+
+// Remove common styles’ code styling which conflicts with syntax highlighting
+code {
+  color: unset;
+  background: unset;
+  display: inline;
+  padding: 0 0;
+  border: none;
 }

@@ -1,0 +1,45 @@
+.__flair_angled-title {
+  & > h3 {
+    #container();
+
+    color: inherit;
+    margin-top: 0;
+
+    #screen-sm-min({
+      margin-bottom: 4.5*@gutter;
+    });
+  }
+}
+
+main > article {
+  // limit content width to increase readability and center it
+  // only affect those on the section pages, not the ones on the front page
+  max-width: 60rem;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+// for blog posts and announcements
+article {
+  emph {
+    font-weight: bold;
+  }
+
+  // justify content text
+  p,
+  ul li {
+    text-align: justify;
+  }
+
+  .published,
+  .event {
+    font-size: .8rem;
+  }
+
+  // zola’s syntax highlighting output requires those styles to be attached to the pre,
+  // not the code element
+  pre {
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+}
