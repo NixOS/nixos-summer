@@ -21,35 +21,6 @@
           configurePhase = ''
             ln -s ${nixos-common-styles.packages.${system}.commonStyles} less/nixos-common-styles
           '';
-          buildPhase = ''
-            lessc --verbose \
-                --math=always \
-                --source-map=static/style.css.map \
-                less/index.less \
-                static/style.css
-
-            zola build
-
-            mkdir public/fonts
-            cp -R ${nixos-common-styles.packages.${system}.commonStyles}/fonts/*.ttf public/fonts/
-
-            convert \
-              -resize 16x16 \
-              -background none \
-              -gravity center \
-              -extent 16x16 \
-              static/images/logo.png \
-              public/favicon.png
-            convert \
-              -resize x16 \
-              -gravity center \
-              -crop 16x16+0+0 \
-              -flatten \
-              -colors 256 \
-              -background transparent \
-              public/favicon.png \
-              public/favicon.ico
-          '';
           installPhase = "cp -r public $out";
         };
         default = nixos-summer-website;
@@ -57,7 +28,7 @@
 
       devShells = forAllSystems (system: {
         default = nixpkgsFor.${system}.mkShellNoCC {
-          packages = with nixpkgsFor.${system}; [ lessc zola ];
+          packages = with nixpkgsFor.${system}; [ imagemagick lessc zola ];
           shellHook = ''
             ln -sfT ${nixos-common-styles.packages.${system}.commonStyles} less/nixos-common-styles
           '';
