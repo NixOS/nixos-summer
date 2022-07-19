@@ -31,5 +31,6 @@ Happy hacking!
 ## License
 
 The content of the website is licensed under the [Creative Commons Attribution
-Share Alike 4.0 International](LICENSE.txt) license.
-
+Share Alike 4.0 International](LICENSE.txt) license. An exception from this are
+code samples, which are in the [public
+domain/CC0](https://creativecommons.org/publicdomain/zero/1.0/).
