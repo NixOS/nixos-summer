@@ -11,20 +11,16 @@ highlight_code = true
 [extra]
 
 [[extra.navbar.links]]
-title = "Summer of Nix"
-target = "/"
-
-[[extra.navbar.links]]
 title = "Blog"
-target = "@/blog/_index.md"
+target = "/blog/"
 
 [[extra.navbar.links]]
 title = "Videos"
-target = "@/videos/_index.md"
+target = "/videos/"
 
 [[extra.navbar.links]]
 title = "Announcements"
-target = "@/announcements/_index.md"
+target = "/announcements/"
 
 [[extra.acknowledgements]]
 name = "European Comission"
