@@ -1,112 +1,16 @@
 @import "nixos-common-styles/index";
 
-@font-primary: 'Overpass', sans-serif;
+@import "setup";
 
+// custom color palette for event web page
 @color-secondary: #ffc554;
 @color-secondary-dark: #e49700;
 @color-secondary-light: #ffc963;
 
-body {
-  margin: 0;
-  font-family: @font-primary;
-}
+// PAGES:
+
+@import "./pages/index";
 
 html {
   scroll-padding-top: 4rem;
-}
-
-.hero {
-  background: @color-secondary-dark;
-  display: flex;
-  color: white;
-  min-height: 40rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-.blurb {
-  h1 {
-    font: @font-primary;
-    font-size: 400%;
-    font-weight: bold;
-  }
-  p {
-    font-size: 120%;
-    line-height: 1.5;
-    font-weight: bold;
-    margin-top: 1rem;
-    margin-bottom: 3rem;
-  }
-}
-
-section.info,
-section.faq {
-  font-weight: 300;
-
-  // limit content width to increase readability and center it
-  max-width: 60rem;
-  margin: 1rem auto;
-  padding: 1rem;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  emph {
-    font-weight: bold;
-  }
-
-  // no border on top of the first section below hero
-  &:not(:nth-child(2)) {
-    border-top: #e9e9e9 1px solid;
-  }
-
-  // reduce title size
-  h2 {
-    font-size: 1.5em;
-  }
-
-  // justify content text
-  p,
-  ul li {
-    text-align: justify;
-  }
-
-  .item {
-    display: block;
-  }
-
-  .img {
-    display: none;
-  }
-}
-
-.acknowledgements {
-  div {
-    width: 100%;
-  }
-
-  .logos {
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-
-    a {
-      text-decoration: none;
-      border-bottom: none;
-    }
-
-    img {
-      max-width: 152px;
-      height: 86px;
-      object-fit: contain;
-    }
-  }
 }

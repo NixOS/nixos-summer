@@ -4,12 +4,12 @@ DEPS = static/style.css static/favicon.ico static/fonts
 
 default: build
 
-static/style.css: less/index.less
+static/style.css: $(wildcard less/*.less) $(wildcard less/**/*.less)
 	lessc \
 		--verbose \
 		--math=always \
 		--source-map=$@.map \
-		$< \
+		less/index.less \
 		$@
 
 static/fonts: $(wildcard less/nixos-common-styles/fonts/*.ttf)
