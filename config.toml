@@ -19,6 +19,10 @@ title = "Videos"
 target = "/videos/"
 
 [[extra.navbar.links]]
+title = "Live"
+target = "/live/"
+
+[[extra.navbar.links]]
 title = "Announcements"
 target = "/announcements/"
 
