@@ -1,2 +1,5 @@
+/less/nixos-common-styles
 /public
 /result*
+/static/style.css
+/static/style.css.map

@@ -3,7 +3,10 @@
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-  outputs = { self, nixpkgs }:
+  inputs.nixos-common-styles.url = "github:NixOS/nixos-common-styles";
+  inputs.nixos-common-styles.inputs.nixpkgs.follows = "nixpkgs";
+
+  outputs = { self, nixpkgs, nixos-common-styles }:
     let
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -14,9 +17,21 @@
         nixos-summer-website = nixpkgsFor.${system}.stdenvNoCC.mkDerivation {
           name = "nixos-summer-website";
           src = self;
-          nativeBuildInputs = with nixpkgsFor.${system}; [ zola imagemagick ];
+          nativeBuildInputs = with nixpkgsFor.${system}; [ zola imagemagick lessc ];
+          configurePhase = ''
+            ln -s ${nixos-common-styles.packages.${system}.commonStyles} less/nixos-common-styles
+          '';
           buildPhase = ''
+            lessc --verbose \
+                --math=always \
+                --source-map=static/style.css.map \
+                less/index.less \
+                static/style.css
+
             zola build
+
+            mkdir public/fonts
+            cp -R ${nixos-common-styles.packages.${system}.commonStyles}/fonts/*.ttf public/fonts/
 
             convert \
               -resize 16x16 \
@@ -42,7 +57,10 @@
 
       devShells = forAllSystems (system: {
         default = nixpkgsFor.${system}.mkShellNoCC {
-          packages = with nixpkgsFor.${system}; [ zola ];
+          packages = with nixpkgsFor.${system}; [ lessc zola ];
+          shellHook = ''
+            ln -sfT ${nixos-common-styles.packages.${system}.commonStyles} less/nixos-common-styles
+          '';
         };
       });
     };
