@@ -4,7 +4,7 @@
 
   {% set heading = 2 + post_level %}
   <h{{ heading }}><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h{{ heading }}>
-  {% if page.date %}<span class="published">Published on {{ page.date | date(format="%Y-%m-%d") }}</span>{% endif %}
+  {% if page.date or page.extra.author %}<span class="published">Published{% if page.date %} on {{ page.date | date(format="%Y-%m-%d") }}{% endif %}{% if page.extra.author %} by {{ page.extra.author }}{% endif %}</span>{% endif %}
   {% if page.extra.event_start and page.extra.event_end %}<span class="event">The event happens between {{ page.extra.event_start | date(format="%Y-%m-%d %H:%M") }} and {{ page.extra.event_end | date(format="%Y-%m-%d %H:%M") }}</span>{% endif %}
 
   <section>
