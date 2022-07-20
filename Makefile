@@ -39,7 +39,7 @@ static/favicon.ico: static/favicon.png
 build: public
 
 public: ${DEPS}
-	zola build
+	zola build -u "/"
 
 serve: ${DEPS}
 	zola serve
