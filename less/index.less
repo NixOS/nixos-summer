@@ -1,0 +1,54 @@
+@import "nixos-common-styles/index";
+
+@import "setup";
+
+// custom color palette for event web page
+@color-secondary: #ffc554;
+@color-secondary-dark: #e49700;
+@color-secondary-light: #ffc963;
+
+// PAGES:
+
+@import "./pages/index";
+@import "./pages/blog";
+@import "./pages/owncast";
+
+html {
+  scroll-padding-top: 4rem;
+}
+
+header {
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+}
+
+.page-title {
+  min-height: 300px;
+}
+
+// Remove common styles’ code styling which conflicts with syntax highlighting
+code {
+  color: unset;
+  background: unset;
+  display: inline;
+  padding: 0 0;
+  border: none;
+}
+
+iframe {
+  border: none;
+}
+
+body.fullscreen {
+  background: #theme.footer[background];
+
+  header {
+    margin-bottom: 0px;
+  }
+
+  footer {
+    margin-top: 0px;
+  }
+}

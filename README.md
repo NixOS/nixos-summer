@@ -6,28 +6,24 @@ This is source code for [summer.nixos.org](https://summer.nixos.org) website.
 To contribute please send a Pull Request. A **preview link** is going to be
 generated and added as a comment once build of the website finishes.
 
-To develop on the website **locally** use the following commands.
+To develop on the website **locally** you have multiple possibilities.
 
 ```console
-$ nix build ./#packages.x86_64-linux.nixos-summer-serve -o ./result-serve
-# or
-$ nix-build . -A packages.x86_64-linux.nixos-summer-serve -o ./result-serve
-
-$ ./result-serve/bin/serve
+# If you use direnv
+$ make serve
+# If you don’t use direnv but have flake-enabled Nix
+$ nix develop -c make serve
+# If you don’t have direnv or flake-enabled Nix
+$ nix-shell --run "make serve"
 ```
 
-Last command will build the repository and **watch for changes of the files**
-in this repository. Once some file **changes it will trigger a rebuild**.
+The site will automatically get rebuilt if you change its content.
+However, please note that changes to the style (less) or the config are not affected by this,
+so after you update them,
+you need to restart the server.
 
-> This only works on files tracked by git! For instance, if you want to add
-> images, you need to add them to git before they are included in build.
-
-Local preview is served at **`http://127.0.0.1:8000`**.
-
-If you are using [LiveReload](http://livereload.com/extensions/) browser
-extension the browser is going to be reloaded automatically once the rebuild is
-done. If you are not using LiveReload, you will have to refresh the browser
-yourself.
+The server will be listening on **`http://127.0.0.1:1111`** by default,
+though this can change if that port is already in use.
 
 Happy hacking!
 
@@ -35,5 +31,6 @@ Happy hacking!
 ## License
 
 The content of the website is licensed under the [Creative Commons Attribution
-Share Alike 4.0 International](LICENSE.txt) license.
-
+Share Alike 4.0 International](LICENSE.txt) license. An exception from this are
+code samples, which are in the [public
+domain/CC0](https://creativecommons.org/publicdomain/zero/1.0/).

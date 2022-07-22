@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content -%}
+<section class="hero">
+  <div>
+  <div class="blurb">
+    <h1>{{ config.title }}</h1>
+    <p>{{ config.description }}</p>
+  </div>
+  </div>
+</section>
+<section class="info">
+  <div>
+  {% set announcements = get_section(path="announcements/_index.md") %}
+  {% set post_level = 1 %}
+  <h2>Announcements</h2>
+    {% for page in announcements.pages | slice(end=3) %}
+    {% include "post.html" %}
+    {% endfor %}
+  <a href="{{ get_url(path="@/announcements/_index.md") }}">Read more</a>
+  </div>
+</section>
+<section class="acknowledgements info">
+  <div>
+    <h2>Acknowledgements</h2>
+    <p>The Summer of Nix would like to thank all its partners who made the program come to life 🎉</p>
+    <div class="logos">
+      {% for acknowledgement in config.extra.acknowledgements %}
+      <a href="{{ acknowledgement.link }}"><img src="{{ get_url(path="images/acknowledgements/" ~ acknowledgement.logo) }}"/></a>
+      {% endfor %}
+      {%- endblock content %}
+    </div>
+  </div>
+</section>

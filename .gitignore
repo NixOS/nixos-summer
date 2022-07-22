@@ -1,2 +1,8 @@
+/less/nixos-common-styles
+/public
 /result*
-/src/styles/common-styles
+/static/favicon.ico
+/static/favicon.png
+/static/fonts
+/static/style.css
+/static/style.css.map
