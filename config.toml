@@ -26,6 +26,10 @@ target = "/live/"
 title = "Announcements"
 target = "/announcements/"
 
+[[extra.navbar.links]]
+title = "Calendar"
+target = "/calendar/"
+
 [[extra.acknowledgements]]
 name = "European Comission"
 link = "https://ec.europa.eu/info/departments/communications-networks-content-and-technology_en"
