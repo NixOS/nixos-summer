@@ -1,25 +1,4 @@
 {% extends "base.html" %}
 {% block content -%}
-<div class="owncast-wrapper">
-  <div class="owncast-stream-wrapper">
-    <div class="owncast-stream-inner-wrapper">
-      <iframe
-        class="owncast-stream"
-        src="https://live.bjth.xyz/embed/video"
-        title="Owncast"
-        referrerpolicy="origin"
-        scrolling="no"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-
-  <iframe
-    class="owncast-chat"
-    src="https://live.bjth.xyz/embed/chat/readwrite"
-    title="Owncast Chat"
-    referrerpolicy="origin"
-    scrolling="no">
-  </iframe>
-</div>
+{{ page.content | safe }}
 {% endblock %}
