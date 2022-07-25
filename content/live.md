@@ -4,4 +4,4 @@ template: live.html
 extra:
   fullscreen: true
 ---
-{{ owncast(host="https://live.bjth.xyz") }}
+{{ owncast(host="https://live.nixos.org") }}
