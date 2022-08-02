@@ -1,7 +1,11 @@
 ---
 title: Perl Diving with Nix
 date: 2021-10-01 # estimated
+extra:
+    author: Thomas Sean Kelly
 ---
+
+## Introduction
 
 This is a record of my time in the Summer of Nix holding my breath and diving into the depths of Nix to gain some Perls of wisdom.
 
@@ -401,15 +405,13 @@ Thanks to [Las](https://las.rs) for this flakier way of doing things.
 
 Sadly this still fails with the `undefined symbol` error so it seems we need an ever more ancient version of Zbar
 
-### Where things float
+## Where things float
 
 It seems that we have reached the point of diminishing returns and that it does not seem worth while to figure out how to build ever older versions of ZBar in the hope that this *might* someday work.
 
 So what next?
 
-Perhaps we can convince upstream to take on the maintenance of this Perl module and bring it (and their own project) kicking and screaming into the decade of the '20s.
-
-## [Sometimes your brain just needs some downtime](https://www.scientificamerican.com/article/mental-downtime/)
+Perhaps we can convince upstream to take on the maintenance of this Perl module and bring it (and their own project) kicking and screaming into the decade of the '20s. ([Sometimes your brain just needs some downtime](https://www.scientificamerican.com/article/mental-downtime/))
 
 A few days after putting this project on the back burner I woke up with an inexplicable renewed enthusiasm for tackling this issue.
 
@@ -444,7 +446,7 @@ BarcodeZBar = buildPerlPackage {
 
 Et Voila we have a Perl Module that interfaces with the current version of ZBar!
 
-### Addendum
+## Addendum
 
 The keen-eyed among you will have noticed that there is a bit of trickery happening with the `postPatch` hook.
 
@@ -458,7 +460,7 @@ This happens because for some reason our propagatedBuildInputs not being added t
 
 It is unclear to me why this is and perhaps a issue needs to be opened that addresses this.
 
-#### A quick refresher on `NIX_LDFLAGS`.
+## A quick refresher on `NIX_LDFLAGS`.
 
 Nix differs drastically from other Linux distributions (and in difference is strength) and does not store header files and libraries in the traditional `/usr/include` where the compiler expects them, instead everything is in the Nix Store... Which means that somehow we need to make the compiler aware of the correct paths to these headers and libraries. This is where `NIX_LDFLAGS` (and its partner in compile `NIX_CFLAGS_COMPILE`) come in. The ALL CAPS should give you a clue that they are *environment variables* which are used to furnish the compiler (by way of command line arguments) with these correct paths. This is all done using shell-scripts that wrap around the actual compiler, for more information see the [C section](https://nixos.wiki/wiki/C) on the Nixos Wiki.
 
