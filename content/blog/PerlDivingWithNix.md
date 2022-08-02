@@ -1,7 +1,8 @@
 ---
 title: Perl Diving with Nix
 date: 2021-10-01 # estimated
-author: Thomas Sean Kelly
+extra:
+    author: Thomas Sean Kelly
 ---
 
 ## Introduction
