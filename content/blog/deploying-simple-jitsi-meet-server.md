@@ -279,9 +279,9 @@ To enable Jibri, add:
 ```
 
 By default, it will record to `/tmp/recordings`.
-This and more options can be configured by setting `services.jitsi-meet.jibri.config`,
+This and more options can be configured by setting `services.jibri.config`,
 for which a reference configuration file can be found [in the jibri source code](https://github.com/jitsi/jibri/blob/master/src/main/resources/reference.conf),
-or `services.jitsi-meet.finalizeScript`.
+or `services.jibri.finalizeScript`.
 The latter has a [useful example in the NixOS module documentation](https://search.nixos.org/options?channel=22.05&show=services.jibri.finalizeScript&from=0&size=50&sort=relevance&type=packages&query=services.jibri.).
 
 An example that changes the recording destination directory
