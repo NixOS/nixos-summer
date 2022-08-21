@@ -9,14 +9,17 @@
   </div>
 </section>
 <section class="info">
-  <div>
+  <div class="announcements">
   {% set announcements = get_section(path="announcements/_index.md") %}
   {% set post_level = 1 %}
   <h2>Announcements</h2>
     {% for page in announcements.pages | slice(end=3) %}
     {% include "post.html" %}
+    <a href="{{ page.permalink }}">Read more</a>
     {% endfor %}
-  <a href="{{ get_url(path="@/announcements/_index.md") }}">Read more</a>
+    <div>
+      <a href="{{ get_url(path="@/announcements/_index.md") }}">All announcements</a>
+    </div>
   </div>
 </section>
 <section class="acknowledgements info">

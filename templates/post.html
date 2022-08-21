@@ -3,14 +3,16 @@
   {% set truncate_post = truncate_post | default(value=0) %}
   {% set post_hide_content = post_hide_content | default(value=false) %}
 
-  {% set heading = 2 + post_level %}
-  <h{{ heading }}><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h{{ heading }}>
+  {% set heading = 1 + post_level %}
+  <h{{ heading }}><a href="{{ page.permalink | safe }}">{{ page.title | markdown(inline=true) | safe }}</a></h{{ heading }}>
   {% if page.date or page.extra.author %}<span class="published">Published{% if page.date %} on {{ page.date | date(format="%Y-%m-%d") }}{% endif %}{% if page.extra.author %} by {{ page.extra.author }}{% endif %}</span>{% endif %}
   {% if page.extra.event_start and page.extra.event_end %}<span class="event">The event happens between {{ page.extra.event_start | date(format="%Y-%m-%d %H:%M") }} and {{ page.extra.event_end | date(format="%Y-%m-%d %H:%M") }}</span>{% endif %}
 
   {% if not post_hide_content -%}
   <section>
-    {{ page.content | safe }}
+    <div><!-- required for firefox to respect -webkit-line-clamp -->
+      {{ page.content | safe }}
+    </div>
   </section>
   {%- endif %}
 </article>

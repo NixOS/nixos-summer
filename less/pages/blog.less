@@ -14,7 +14,7 @@
 main > article {
   // limit content width to increase readability and center it
   // only affect those on the section pages, not the ones on the front page
-  max-width: 60rem;
+  max-width: 45rem;
   margin: 1rem auto;
   padding: 1rem;
 }
@@ -23,12 +23,6 @@ main > article {
 article {
   emph {
     font-weight: bold;
-  }
-
-  // justify content text
-  p,
-  ul li {
-    text-align: justify;
   }
 
   .published,
@@ -42,4 +36,16 @@ article {
     padding: 1rem;
     border-radius: 0.5rem;
   }
+
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+
+  h2, h3, h4, h5, h6 {
+    padding-top: 2rem;
+  };
 }

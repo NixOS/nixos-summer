@@ -19,7 +19,7 @@
 
     #screen-md-min({
       #flex-flexible-spacing(@gutter);
-      max-width: 60rem;
+      max-width: 45rem;
     });
 
     #screen-sm-max({
@@ -103,7 +103,7 @@ code {
 section.info,
 section.faq {
   // limit content width to increase readability and center it
-  max-width: 60rem;
+  max-width: 45rem;
   margin: 1rem auto;
   padding: 1rem;
 
@@ -125,12 +125,6 @@ section.faq {
     font-size: 1.5em;
   }
 
-  // justify content text
-  p,
-  ul li {
-    text-align: justify;
-  }
-
   .item {
     display: block;
   }
@@ -139,6 +133,13 @@ section.faq {
     display: none;
   }
 }
+
+.announcements section {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  overflow: hidden;
+};
 
 // alternate content align on each section (wide screens)
 // except faq
@@ -186,12 +187,15 @@ section.faq {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
+
+    margin-top: 2rem;
 
     a {
       text-decoration: none;
       border-bottom: none;
+      margin: 0.5rem 2rem;
     }
 
     img {
