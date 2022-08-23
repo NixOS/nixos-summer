@@ -6,7 +6,7 @@ extra:
 ---
 
 In [`nixpkgs`](https://github.com/nixos/nixpkgs), there is a massive use of the
-`callPackage` funcion, which usage provides us with a lot of benefits.
+`callPackage` function, which provides us with a lot of benefits.
 
 ## Basic examples
 
@@ -17,7 +17,7 @@ Given are these 2 files `hello.nix` and `default.nix`:
 ```nix
 # Usually I would prefer the usage of nix flakes, though that would
 # introduce a lot of boilerplate in the examples for no reason,
-# therefore I will use diamond pathes and `import` for simplicity.
+# therefore I will use diamond paths and `import` for simplicity.
 ```
 
 ```nix
@@ -86,14 +86,14 @@ people" instead.
 We can use the very same syntax to also overwrite the automatically discovered
 arguments like `writeShellScriptBin`, though that doesn't make sense here.
 
-For a go program though that expects `buildGoModule` it is common to see some
+Though, for a Go program that expects `buildGoModule` it is common to see some
 expression like `callPackage ./go-program.nix { buildGoModule = buildGo116Module; }`
-to enforce a certain go compiler version.
+to enforce a certain Go compiler version.
 
 ## 2. Benefit: overrides
 
 As a consequence from the parametrized builds, we can also change the value of
-the parameters after the fact, using the derivations `override` funcion.
+the parameters after the fact, using the derivations `override` function.
 
 Consider this new `default.nix`:
 
@@ -128,10 +128,11 @@ You can actually create your own version of `callPackage`, which comes in quite
 handy when you have large sets where the attributes to be built depend on each
 other.
 
-<NoteBox>
-    In the next examples I will not implement or show the "called" files, as I
-    think they are not necessary to understand the point I want to make.
-</NoteBox>
+```nix
+# In the next examples I will not implement or show the "called" 
+# files, as I think they are not necessary to understand the point I
+# want to make.
+```
 
 Consider the following initial version:
 
@@ -173,7 +174,7 @@ in
 Our modified `callPackage` now will exactly "know" how to resolve the dependencies
 through the set defined by `pkgs // packages`.
 
-Nix' lazyness does us a good favour here and makes this actually possible.
+Nix' laziness does us a good favour here and makes this actually possible.
 
 ## Summary
 
@@ -187,7 +188,7 @@ in nixpkgs already, it also gives you some things for free:
 ## Further reading
 
 There is also `callPackages` and `lib.callPackages` which do a pretty similar
-thing, though they expect that the returnvalue is *not* a package, but a
+thing, though they expect that the return value is *not* a package, but a
 packageset.
 Each of the attributes in the returned set will then be overrideable as if you
 had called `callPackage` on that.
@@ -214,5 +215,5 @@ building '/nix/store/qj9hg9qiahggi4yk6qsh4wv33jl33f36-a.drv'...
 /nix/store/50llkafby4vci46qda0xlva24mlghwr0-a
 ```
 
-As you can see, 2 different pathes have been produced, due to the fact that we
+As you can see, 2 different paths have been produced, due to the fact that we
 replaced the `runCommand`.
