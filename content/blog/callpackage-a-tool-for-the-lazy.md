@@ -39,6 +39,8 @@ writeShellScriptBin "hello" ''
 ''
 ```
 
+`hello.nix` declares a function which takes as argument an attribute set with one element `writeShellScriptBin`. `writeShellScriptBin` is also a function, which happens to return a derivation. The build result in this case is an executable shell script with the contents `echo "hello world"` named `"hello"`.
+
 Building using `nix-build` (which implicitly evaluates `default.nix` unless told otherwise) will produce `./result/bin/hello`, and running the resulting script will nicely greet you.
 
 As you can see, `writeShellScriptBin` gets passed in by `callPackage` automatically.
