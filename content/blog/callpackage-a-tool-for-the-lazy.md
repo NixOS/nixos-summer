@@ -40,8 +40,11 @@ Building using `nix-build` (which implicitly evaluates `default.nix` unless told
 
 As you can see, `writeShellScriptBin` gets passed in by `callPackage` automatically.
 
-For this simple setup, having to create an extra file, seems to be a lot of
-boilerplate, though if you continue reading, you will see, it is worth it!
+It may appear cumbersome to create an extra file for the package in such a simple setup.
+But in fact, this is exactly how `nixpkgs` is organized: every package is a file that declares a function.
+This function takes as arguments the package's dependencies.
+
+If you continue reading, you will see the benefits of this pattern!
 
 ## 1. Benefit: parametrized builds
 
