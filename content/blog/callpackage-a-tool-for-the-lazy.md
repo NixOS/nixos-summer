@@ -166,6 +166,9 @@ rec {
 }
 ```
 
+Note that `inherit a;` is equivalent to `a = a;`.
+That is, we're passing previously declared derivations as arguments to other derivations through `callPackage`.
+
 Here you have to remember passing required arguments that are not in nixpkgs'
 toplevel manually.
 
