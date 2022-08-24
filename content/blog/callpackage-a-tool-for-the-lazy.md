@@ -10,9 +10,9 @@ In [`nixpkgs`](https://github.com/nixos/nixpkgs), there is a massive use of the
 
 ## Basic examples
 
-Though before even discussing the benefits, lets see how it actually gets used.
+Before even discussing the benefits, let's see how it actually gets used.
 
-Given are these 2 files `hello.nix` and `default.nix`:
+Given are the files `hello.nix` and `default.nix`:
 
 ```nix
 # Usually I would prefer the usage of nix flakes, though that would
@@ -28,7 +28,7 @@ pkgs.callPackage ./hello.nix {}
 
 ```nix
 # hello.nix
-{writeShellScriptBin}:
+{ writeShellScriptBin }:
 writeShellScriptBin "hello" ''
   echo "hello, world!"
 ''
@@ -44,7 +44,9 @@ boilerplate, though if you continue reading, you will see, it is worth it!
 
 ## 1. Benefit: parametrized builds
 
-Now lets change the `default.nix`:
+Let's change the `default.nix`.
+
+Now it does not produce a single derivation any more, but an attribute set with the attribute `hello` containing the original derivation:
 
 ```nix
 # default.nix
@@ -54,9 +56,9 @@ let pkgs = import <nixpkgs> { }; in
 }
 ```
 
-Now we build using `nix-build -A hello`, the outcome will be the same as above.
+When we build it with `nix-build -A hello` (accessing the attribtue `hello` with the `-A` flag), the outcome will be the same as before.
 
-Now to "parametrize" the build we also change the `hello.nix` a bit:
+We also change `hello.nix` to add an additional parameter `audience` with default value `"world"`:
 
 ```nix
 # hello.nix
@@ -80,13 +82,13 @@ let pkgs = import <nixpkgs> { }; in
 }
 ```
 
-Building via `nix-build -A people` will now yield a script that prints "hello,
-people" instead.
+Building via `nix-build -A people` will now yield a script that prints `hello,
+people`.
 
-We can use the very same syntax to also overwrite the automatically discovered
+We could use the very same syntax to also overwrite the automatically discovered
 arguments like `writeShellScriptBin`, though that doesn't make sense here.
 
-Though, for a Go program that expects `buildGoModule` it is common to see some
+For example, a Go program that expects `buildGoModule` it is common to see some
 expression like `callPackage ./go-program.nix { buildGoModule = buildGo116Module; }`
 to enforce a certain Go compiler version.
 
@@ -95,7 +97,7 @@ to enforce a certain Go compiler version.
 As a consequence from the parametrized builds, we can also change the value of
 the parameters after the fact, using the derivations `override` function.
 
-Consider this new `default.nix`:
+Consider this new `default.nix`, where we added a third attribute `folks`:
 
 ```nix
 # default.nix
@@ -107,24 +109,24 @@ rec {
 }
 ```
 
-Building and running the `folks` attribute, will give again a new version of the
-script.
+Building and running the `folks` attribute with `nix-build -A folks` will again produce a new version of the script.
+It will print, as you may expect, `hello folks`.
 
-All the other parameters will remain the same as the have been when `hello` was
+All the other parameters will remain the same as they have been when `hello` was
 instantiated.
 
-This is especially useful and often seen on packages that provide a whole lot of
-options to optimize the build.
+This is especially useful and often seen on packages that provide many
+options to customize the build.
 
-An example to mention here is the `neovim` attribute in nixpkgs, which has has 
+An example to mention here is the [`neovim`](https://search.nixos.org/packages?channel=22.05&show=neovim&from=0&size=50&sort=relevance&type=packages&query=neovim) attribute in nixpkgs, which has has 
 some overrideable arguments like `extraLuaPackages`, `extraPythonPackages`, or
 `withRuby`.
 
 ## 3. Benefit: modifiable
 
-And now I want to introduce one of my most favorite benefits:
+And now I want to introduce one of my favorite benefits:
 
-You can actually create your own version of `callPackage`, which comes in quite
+You can actually create your own version of `callPackage`. This comes in quite
 handy when you have large sets where the attributes to be built depend on each
 other.
 
@@ -134,7 +136,7 @@ other.
 # want to make.
 ```
 
-Consider the following initial version:
+Consider the following attribute set of derivations:
 
 ```nix
 # default.nix
@@ -153,7 +155,7 @@ toplevel manually.
 
 This can become quite tedious quickly, especially the larger the set becomes.
 
-Therefore we can use `lib.callPackageWith` to create our own `callPackage` version.
+Therefore we can use `lib.callPackageWith` to create our own `callPackage`:
 
 ```nix
 # default.nix
@@ -178,42 +180,8 @@ Nix' laziness does us a good favour here and makes this actually possible.
 
 ## Summary
 
-So using `callPackage` doesn't only make your code uniform to what you see a lot
-in nixpkgs already, it also gives you some things for free:
+Using `callPackage` does not only follow `nixpkgs` conventions, making your code easy to follow for experienced Nix users. It also gives you some things for free:
 
 1. parametrized builds
-2. overrideable builds
-3. cleaner implementation of large interdepending package sets
-
-## Further reading
-
-There is also `callPackages` and `lib.callPackages` which do a pretty similar
-thing, though they expect that the return value is *not* a package, but a
-packageset.
-Each of the attributes in the returned set will then be overrideable as if you
-had called `callPackage` on that.
-
-```nix
-# callpackages.nix
-{ runCommand }:
-{
-  a = runCommand "a" { } "echo a > $out";
-  b = runCommand "b" { } "echo b > $out";
-}
-```
-
-```
-$ nix-build -E 'with import <nixpkgs> {}; (callPackages ./callpackages.nix { }).a.override { }'
-this derivation will be built:
-  /nix/store/4sjzxijjfamjqgr8237lr638b8qkabnk-a.drv
-building '/nix/store/4sjzxijjfamjqgr8237lr638b8qkabnk-a.drv'...
-/nix/store/4n3w8mkswwpfa1vvx3012xbaqskflg2z-a
-$ nix-build -E 'with import <nixpkgs> {}; (callPackages ./callpackages.nix { }).a.override { runCommand = runCommandCC; }'
-this derivation will be built:
-  /nix/store/qj9hg9qiahggi4yk6qsh4wv33jl33f36-a.drv
-building '/nix/store/qj9hg9qiahggi4yk6qsh4wv33jl33f36-a.drv'...
-/nix/store/50llkafby4vci46qda0xlva24mlghwr0-a
-```
-
-As you can see, 2 different paths have been produced, due to the fact that we
-replaced the `runCommand`.
+2. overridable builds
+3. robust implementation of large interdependent package sets
