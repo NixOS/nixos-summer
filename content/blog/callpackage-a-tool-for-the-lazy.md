@@ -122,6 +122,10 @@ rec {
 }
 ```
 
+Note that the resulting attribute set is now recursive (by the keyword `rec`), that is, attribute values can refer to names from within the same attribute.
+
+Here we take the `hello` derivation and call its `override` attribute as a function, passing the attribute set `{  `audience = "folks"; }`. `override` passes `audience` to the original function in `hello.nix` - to be precise, *overrides* whatever arguments have been passed in the original `callPackage` that produced the derivation `hello`.
+
 Building and running the `folks` attribute with `nix-build -A folks` will again produce a new version of the script.
 It will print, as you may expect, `hello folks`.
 
