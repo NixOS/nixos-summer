@@ -15,12 +15,6 @@ Before even discussing the benefits, let's see how it actually gets used.
 Given are the files `hello.nix` and `default.nix`:
 
 ```nix
-# Usually I would prefer the usage of nix flakes, though that would
-# introduce a lot of boilerplate in the examples for no reason,
-# therefore I will use diamond paths and `import` for simplicity.
-```
-
-```nix
 # default.nix
 let pkgs = import <nixpkgs> {}; in
 pkgs.callPackage ./hello.nix {}
@@ -130,11 +124,10 @@ You can actually create your own version of `callPackage`. This comes in quite
 handy when you have large sets where the attributes to be built depend on each
 other.
 
-```nix
-# In the next examples I will not implement or show the "called" 
-# files, as I think they are not necessary to understand the point I
-# want to make.
-```
+> **Note**
+> In the next examples I will not implement or show the "called" 
+> files, as I think they are not necessary to understand the point I
+> want to make.
 
 Consider the following attribute set of derivations:
 
