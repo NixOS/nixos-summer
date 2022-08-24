@@ -74,8 +74,11 @@ writeShellScriptBin "hello" ''
 ''
 ```
 
-Building this will still yield the same output as before, though now things get
-interesting, alter your `default.nix` yet another time:
+Building this will still yield the same output as before.
+
+Things get more interesting when we alter `default.nix` another time, by adding a new attribute `people` to the result.
+
+Note how we pass a parameter `audience` in the second argument to `callPackage`, which is passed on to the function defined in `hello.nix`:
 
 ```nix
 # default.nix
