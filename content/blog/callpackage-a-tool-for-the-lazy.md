@@ -5,8 +5,16 @@ extra:
   author: Norbert Melzer
 ---
 
-In [`nixpkgs`](https://github.com/nixos/nixpkgs), there is a massive use of the
-`callPackage` function, which provides us with a lot of benefits.
+The Nix package manager ships with a a special-purpose programming language for creating packages and configurations: the Nix language.
+It is used to build the Nix package collection, known as [`nixpkgs`](https://github.com/nixos/nixpkgs) – the largest, most up-to-date open source software distribution in the world.
+
+Being purely functional, the Nix language allows declaring custom functions to abstract over common patterns.
+One such pattern is parametrization of package definitions, that is, builds which can vary by their dependencies or settings.
+
+`nixpkgs` is a sizeable software project on it's own, with coding conventions and idioms that have emerged over the years.
+It has [established a convention](https://github.com/NixOS/nixpkgs/pull/9869) of composing parameterized packages with automatic settings through a function named [`callPackage`](https://github.com/NixOS/nixpkgs/commit/fd268b4852d39c18e604c584dd49a611dc795a9b).
+
+This article shows how to use it and why it's beneficial.
 
 ## Basic examples
 
