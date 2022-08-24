@@ -183,5 +183,5 @@ Nix' laziness does us a good favour here and makes this actually possible.
 Using `callPackage` does not only follow `nixpkgs` conventions, making your code easy to follow for experienced Nix users. It also gives you some things for free:
 
 1. parametrized builds
-2. overridable builds
-3. robust implementation of large interdependent package sets
+2. overrideable builds
+3. cleaner implementation of large interdepending package sets
