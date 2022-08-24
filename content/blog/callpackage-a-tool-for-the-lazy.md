@@ -169,8 +169,10 @@ rec {
 Note that `inherit a;` is equivalent to `a = a;`.
 That is, we're passing previously declared derivations as arguments to other derivations through `callPackage`.
 
-Here you have to remember passing required arguments that are not in nixpkgs'
-toplevel manually.
+In this case you have to remember to manually pass arguments required by each package in the respective `.nix` file if they are not in `nixpkgs`.
+This is due to how `pkgs.callPackage` works: it passes attributes that exist in `pkgs` to the called function if the argument names match.
+
+If `./b.nix` requires an argument `a` but there is no `pkgs.a`, the function call will produce an error.
 
 This can become quite tedious quickly, especially the larger the set becomes.
 
