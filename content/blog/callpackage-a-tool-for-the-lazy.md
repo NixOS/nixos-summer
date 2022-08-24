@@ -106,8 +106,9 @@ to enforce a certain Go compiler version.
 
 ## 2. Benefit: overrides
 
-As a consequence from the parametrized builds, we can also change the value of
-the parameters after the fact, using the derivations `override` function.
+`callPackage` adds more convenience by adding an attribute to the derivation it returns: the `override` function.
+
+That is, as a consequence of handling parametrized builds with `callPackage`, we can also change the value of the parameters after the fact, using the derivation's `override` function.
 
 Consider this new `default.nix`, where we added a third attribute `folks`:
 
