@@ -28,8 +28,7 @@ writeShellScriptBin "hello" ''
 ''
 ```
 
-Building using `nix-build` will produce `./result/bin/hello`, and running it will
-nicely greet you.
+Building using `nix-build` (which implicitly evaluates `default.nix` unless told otherwise) will produce `./result/bin/hello`, and running the resulting script will nicely greet you.
 
 As you can see, `writeShellScriptBin` gets passed in by `callPackage` automatically.
 
