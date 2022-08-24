@@ -28,6 +28,9 @@ let pkgs = import <nixpkgs> {}; in
 pkgs.callPackage ./hello.nix {}
 ```
 
+`default.nix` produces a *derivation* from the contents of `hello.nix`.
+This what the Nix package manager calls its build results (which are often packaged executables, but can be arbitrary files), and what the Nix language calls the data type of such an expression.
+
 ```nix
 # hello.nix
 { writeShellScriptBin }:
