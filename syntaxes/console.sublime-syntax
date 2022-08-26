@@ -1,0 +1,9 @@
+# Dummy file because Zola does not ship with a console syntax
+%YAML 1.2
+---
+name: console
+file_extensions:
+  - console
+scope: source.console
+contexts:
+  main: []
