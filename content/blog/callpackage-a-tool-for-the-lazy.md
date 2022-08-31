@@ -43,7 +43,10 @@ writeShellScriptBin "hello" ''
 
 Building using `nix-build` (which implicitly evaluates `default.nix` unless told otherwise) will produce `./result/bin/hello`, and running the resulting script will nicely greet you.
 
-As you can see, `writeShellScriptBin` gets passed in by `callPackage` automatically.
+As you can see, the argument `writeShellScriptBin` gets filled in automatically when the function in `hello.nix` is evaluated.
+Explaining in detail how this happens is not in the scope of this blogpost.
+This automatic filling of attributes is what `callPackage` is responsible for.
+It passes attributes that exist in the `pkgs` attribute set to the called function, simply matching by name.
 
 It may appear cumbersome to create an extra file for the package in such a simple setup.
 But in fact, this is exactly how `nixpkgs` is organized: every package is a file that declares a function.
