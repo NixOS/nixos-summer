@@ -29,7 +29,7 @@ pkgs.callPackage ./hello.nix {}
 ```
 
 `default.nix` produces a *derivation* from the contents of `hello.nix`.
-This what the Nix package manager calls its build results (which are often packaged executables, but can be arbitrary files), and what the Nix language calls the data type of such an expression.
+A derivation is what the Nix package manager calls a description of how to obtain a desired build result. Build results are often packaged executables, but can be arbitrary files. Derivation is also the data type of the corresponding expression in the Nix language.
 
 ```nix
 # hello.nix
@@ -41,15 +41,15 @@ writeShellScriptBin "hello" ''
 
 `hello.nix` declares a function which takes as argument an attribute set with one element `writeShellScriptBin`. `writeShellScriptBin` is also a function, which happens to return a derivation. The build result in this case is an executable shell script with the contents `echo "hello world"` named `"hello"`.
 
-Building using `nix-build` (which implicitly evaluates `default.nix` unless told otherwise) will produce `./result/bin/hello`, and running the resulting script will nicely greet you.
+Building `default.nix` with `nix-build` produces the build result `./result/bin/hello`, and running this script will nicely greet you.
 
 As you can see, the argument `writeShellScriptBin` gets filled in automatically when the function in `hello.nix` is evaluated.
 Explaining in detail how this happens is not in the scope of this blogpost.
 This automatic filling of attributes is what `callPackage` is responsible for.
 It passes attributes that exist in the `pkgs` attribute set to the called function, simply matching by name.
 
-It may appear cumbersome to create an extra file for the package in such a simple setup.
-But in fact, this is exactly how `nixpkgs` is organized: every package is a file that declares a function.
+It may appear cumbersome to create the extra file `hello.nix` for the package in such a simple setup.
+We have done so because this is exactly how [`nixpkgs`](https://github.com/nixos/nixpkgs) is organized: every package is a file that declares a function.
 This function takes as arguments the package's dependencies.
 
 If you continue reading, you will see the benefits of this pattern!
@@ -68,7 +68,7 @@ let pkgs = import <nixpkgs> { }; in
 }
 ```
 
-When we build it with `nix-build -A hello` (accessing the attribtue `hello` with the `-A` flag), the outcome will be the same as before.
+When we build it with `nix-build -A hello` (accessing the attribute `hello` with the `-A` flag), the outcome will be the same as before.
 
 We also change `hello.nix` to add an additional parameter `audience` with default value `"world"`:
 
@@ -84,9 +84,10 @@ writeShellScriptBin "hello" ''
 
 Building this will still yield the same output as before.
 
-Things get more interesting when we alter `default.nix` another time, by adding a new attribute `people` to the result.
+Things get more interesting when we alter `default.nix` another time to make use of this new argument.
+Let's call `hello.nix` with the `audience` attribute set to `people`.
 
-Note how we pass a parameter `audience` in the second argument to `callPackage`, which is passed on to the function defined in `hello.nix`:
+Note how we pass the parameter `audience` in the second argument to `callPackage`, which is passed on to the function defined in `hello.nix`:
 
 ```nix
 # default.nix
@@ -103,15 +104,15 @@ people`.
 We could use the very same syntax to also overwrite the automatically discovered
 arguments like `writeShellScriptBin`, though that doesn't make sense here.
 
-For example, a Go program that expects `buildGoModule` it is common to see some
-expression like `callPackage ./go-program.nix { buildGoModule = buildGo116Module; }`
-to enforce a certain Go compiler version.
+This pattern is used widely in `nixpkgs`:
+For example, functions which represent Go programs often have a parameter `buildGoModule`, and it is common to see an expression like `callPackage ./go-program.nix { buildGoModule = buildGo116Module; }` to enforce a certain Go compiler version.
+`nixpkgs` is therefore not simply a huge library of pre-configured packages, but a collection of functions that can be used to generate custom configurations of packages and even of whole ecosystems ("All Python packages using my custom interpreter") on the fly without duplicating code.
 
 ## 2. Benefit: overrides
 
 `callPackage` adds more convenience by adding an attribute to the derivation it returns: the `override` function.
 
-That is, as a consequence of handling parametrized builds with `callPackage`, we can also change the value of the parameters after the fact, using the derivation's `override` function.
+This means that, as a consequence of handling builds with `callPackage`, we can also change the value of these function arguments _after_ the fact, using the derivation's `override` function.
 
 Consider this new `default.nix`, where we added a third attribute `folks`:
 
@@ -127,7 +128,7 @@ rec {
 
 Note that the resulting attribute set is now recursive (by the keyword `rec`), that is, attribute values can refer to names from within the same attribute.
 
-Here we take the `hello` derivation and call its `override` attribute as a function, passing the attribute set `{  `audience = "folks"; }`. `override` passes `audience` to the original function in `hello.nix` - to be precise, *overrides* whatever arguments have been passed in the original `callPackage` that produced the derivation `hello`.
+Here we take the `hello` derivation and call its `override` attribute as a function, passing the attribute set `{  audience = "folks"; }`. `override` passes `audience` to the original function in `hello.nix` - to be precise, *overrides* whatever arguments have been passed in the original `callPackage` that produced the derivation `hello`.
 
 Building and running the `folks` attribute with `nix-build -A folks` will again produce a new version of the script.
 It will print, as you may expect, `hello folks`.
@@ -142,7 +143,7 @@ An example to mention here is the [`neovim`](https://search.nixos.org/packages?c
 some overrideable arguments like `extraLuaPackages`, `extraPythonPackages`, or
 `withRuby`.
 
-## 3. Benefit: modifiable
+## 3. Benefit: flexible dependency injection
 
 And now I want to introduce one of my favorite benefits:
 
@@ -151,9 +152,7 @@ handy when you have large sets where the attributes to be built depend on each
 other.
 
 > **Note**
-> In the next examples I will not implement or show the "called" 
-> files, as I think they are not necessary to understand the point I
-> want to make.
+> In the next examples I will not implement or show the "called" files, as I think they are not necessary to understand the point I want to make.
 
 Consider the following attribute set of derivations:
 
@@ -177,7 +176,7 @@ This is due to how `pkgs.callPackage` works: it passes attributes that exist in 
 
 If `./b.nix` requires an argument `a` but there is no `pkgs.a`, the function call will produce an error.
 
-This can become quite tedious quickly, especially the larger the set becomes.
+This can become quite tedious quickly, especially for larger sets.
 
 Therefore we can use `lib.callPackageWith` to create our own `callPackage`:
 
@@ -197,14 +196,26 @@ in
   packages
 ```
 
-Our modified `callPackage` now will exactly "know" how to resolve the dependencies
-through the set defined by `pkgs // packages`.
 
-Nix' laziness does us a good favour here and makes this actually possible.
+First of all note that instead of a recursive attribute set, the names we operate on are now assigned in a `let` binding.
+It has the same property as recursive sets: names on the left can be used in expressions on the right of the equal sign (`=`).
+
+This is how we can refer to `packages` when we merge its contents with the pre-existing attribute set `pkgs` using the `//` operator.
+
+Our custom `callPackages` now makes available all the attributes in `pkgs` *and* `packages` to the called package function (the same names from `packages` taking precedence), and  `packages` is being built up recursively with each call.
+
+The last bit may make your head spin. This construction is only possible because the Nix language is lazily evaluated. That is, values are only computed when they are actually needed. It allows passing `packages` around without having fully defined it.
+
+Each package's dependencies are now implicit at this level (they are still explicit in each of the package files), and `callPackage` "knows" how to resolve them.
+This relieves us from dealing with them manually, and precludes configuration errors that may only surface late into a lengthy build process.
+
+Of course this small example is still manageable in the original form, and the implicitly recursive variant probably obscures the structure for software developers not familiar with lazy evaluation, making it harder to read for them than it was before.
+
+But this benefit really pays off for large constructions, where it is the amount of code that would obscure the structure, and where manual modifications would become cumbersome and error-prone.
 
 ## Summary
 
-Using `callPackage` does not only follow `nixpkgs` conventions, making your code easy to follow for experienced Nix users. It also gives you some things for free:
+Using `callPackage` does not only follow `nixpkgs` conventions, which makes your code easier to follow for experienced Nix users. It also gives you some benefits for free:
 
 1. parametrized builds
 2. overrideable builds
