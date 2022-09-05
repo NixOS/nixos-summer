@@ -5,7 +5,7 @@
 
   {% set heading = 1 + post_level %}
   <h{{ heading }}><a href="{{ page.permalink | safe }}">{{ page.title | markdown(inline=true) | safe }}</a></h{{ heading }}>
-  {% if page.date or page.extra.author %}<span class="published">Published{% if page.date %} on {{ page.date | date(format="%Y-%m-%d") }}{% endif %}{% if page.extra.author %} by {{ page.extra.author }}{% endif %}</span>{% endif %}
+  {% if page.date or page.extra.author %}<span class="published">Published{% if page.date %} on {{ page.date | date(format="%Y-%m-%d") }}{% endif %}{% if page.extra.author %} by {% if page.extra.author is string %}{{ page.extra.author }}{% else %}{{ page.extra.author | join (sep=", ") }}{% endif %}{% endif %}</span>{% endif %}
   {% if page.extra.event_start and page.extra.event_end %}<span class="event">The event happens between {{ page.extra.event_start | date(format="%Y-%m-%d %H:%M") }} and {{ page.extra.event_end | date(format="%Y-%m-%d %H:%M") }}</span>{% endif %}
 
   {% if not post_hide_content -%}
