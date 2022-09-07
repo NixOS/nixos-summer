@@ -106,7 +106,7 @@ arguments like `writeShellScriptBin`, though that doesn't make sense here.
 
 This pattern is used widely in `nixpkgs`:
 For example, functions which represent Go programs often have a parameter `buildGoModule`, and it is common to see an expression like `callPackage ./go-program.nix { buildGoModule = buildGo116Module; }` to enforce a certain Go compiler version.
-`nixpkgs` is therefore not simply a huge library of pre-configured packages, but a collection of functions that can be used to generate custom configurations of packages and even of whole ecosystems ("All Python packages using my custom interpreter") on the fly without duplicating code.
+`nixpkgs` is therefore not simply a huge library of pre-configured packages, but a collection of functions that can be used to generate custom configurations of packages and even of whole ecosystems (e.g. "All Python packages using my custom interpreter") on the fly without duplicating code.
 
 ## 2. Benefit: overrides
 
@@ -139,7 +139,7 @@ instantiated.
 This is especially useful and often seen on packages that provide many
 options to customize the build.
 
-An example to mention here is the [`neovim`](https://search.nixos.org/packages?channel=22.05&show=neovim&from=0&size=50&sort=relevance&type=packages&query=neovim) attribute in nixpkgs, which has has 
+An example to mention here is the [`neovim`](https://search.nixos.org/packages?channel=22.05&show=neovim&from=0&size=50&sort=relevance&type=packages&query=neovim) attribute in `nixpkgs`, which has has 
 some overrideable arguments like `extraLuaPackages`, `extraPythonPackages`, or
 `withRuby`.
 
