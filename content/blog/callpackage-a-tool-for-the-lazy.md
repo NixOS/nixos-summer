@@ -2,7 +2,10 @@
 title: callPackage, a tool for the lazy
 date: 2022-08-25
 extra:
-  author: Norbert Melzer
+  author:
+  - Norbert Melzer
+  - Valentin Gagarin
+  - Matthias Meschede
 ---
 
 The Nix package manager ships with a a special-purpose programming language for creating packages and configurations: the Nix language.
