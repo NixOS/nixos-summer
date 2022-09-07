@@ -1,6 +1,6 @@
 ---
 title: callPackage, a tool for the lazy
-date: 2022-08-25
+date: 2022-09-08
 extra:
   author:
   - Norbert Melzer
