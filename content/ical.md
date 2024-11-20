@@ -1,3 +1,3 @@
 ---
-template: calendar.html
+template: ical.html
 ---
